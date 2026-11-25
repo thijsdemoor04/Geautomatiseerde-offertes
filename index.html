@@ -385,7 +385,7 @@
             font-weight: 700;
         }
 
-        /* Onderaan: Reset & PDF export */
+        /* Onderaan: Reset, Word (.docx) & PDF export */
         .bottom-bar {
             margin-top: 28px;
             padding-top: 18px;
@@ -394,6 +394,13 @@
             justify-content: space-between;
             align-items: center;
             gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .export-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
@@ -409,8 +416,14 @@
             cursor: pointer;
         }
 
-        .btn-secondary:hover {
+        .btn-secondary:hover:not(:disabled) {
             background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-secondary:disabled {
+            border-color: #9e9d99;
+            color: #9e9d99;
+            cursor: not-allowed;
         }
 
         .btn-primary {
@@ -535,7 +548,7 @@
             <h1 class="doc-title">Offerte Vragenlijst<br>Totaalonderhoud &amp; Opname</h1>
             <div class="brand-mark">
                 <img src="./PlenderWestendorp_app-icoon_512.png" alt="PlenderWestendorp logo" class="brand-logo">
-                <span>PlenderWestendorp · v1.3</span>
+                <span>PlenderWestendorp · v1.4</span>
             </div>
         </header>
 
@@ -1145,7 +1158,7 @@
 
                         <div class="question-block">
                             <label class="field-label" for="offerte-prijs">Offerte prijs (optioneel)</label>
-                            <span class="field-hint">Wordt onderaan de prijsaanbieding in het overzicht en de PDF-offerte getoond.</span>
+                            <span class="field-hint">Wordt onderaan de prijsaanbieding in het overzicht, de PDF en het Word-document getoond.</span>
                             <input type="text" id="offerte-prijs" oninput="verwerkAlles()" placeholder="">
                         </div>
 
@@ -1186,10 +1199,13 @@
                         </div>
                     </section>
 
-                    <!-- ONDERIN: OPNIEUW BEGINNEN & EXPORTEREN ALS PDF -->
+                    <!-- ONDERIN: OPNIEUW BEGINNEN, DOWNLOAD WORD (.DOCX) & EXPORTEREN ALS PDF -->
                     <div class="bottom-bar">
                         <button type="button" class="btn-secondary" onclick="opnieuwBeginnen()">Opnieuw beginnen</button>
-                        <button type="button" id="btn-export-pdf" class="btn-primary" onclick="exporteerPDF()" disabled>Exporteren als PDF</button>
+                        <div class="export-actions">
+                            <button type="button" id="btn-export-docx" class="btn-secondary" onclick="exporteerWord()" disabled>Download Word (.docx)</button>
+                            <button type="button" id="btn-export-pdf" class="btn-primary" onclick="exporteerPDF()" disabled>Exporteren als PDF</button>
+                        </div>
                     </div>
 
                 </main>
@@ -1288,6 +1304,8 @@
     </div>
 
     <script>
+        const WORKER_URL = 'https://plender-offerte-docx.thijsdemoor.workers.dev/';
+
         let koppelingen = {
             werkzaamheden: [],
             behandeling: [],
@@ -1787,6 +1805,7 @@
             const koppSub = document.getElementById('cnt-sec-koppelingen');
             if (koppSub) koppSub.textContent = `${totaal} gekoppeld`;
 
+            document.getElementById('btn-export-docx').disabled = (totaal === 0);
             document.getElementById('btn-export-pdf').disabled = (totaal === 0);
 
             const leegBox = document.getElementById('koppelingen-leeg');
@@ -1834,65 +1853,145 @@
             }
         }
 
-        function exporteerPDF() {
-            const { werkzaamheden, behandeling, materieel, uitgangspunten, prijsPosten, offertePrijs, overigeTekst } = koppelingen;
-            const prijsCount = prijsPosten.length + (offertePrijs ? 1 : 0);
-            if (werkzaamheden.length + behandeling.length + materieel.length + uitgangspunten.length + prijsCount === 0) return;
-
+        function bouwOfferteBasisGegevens() {
             const vandaag = new Date().toLocaleDateString('nl-NL', {
                 day: 'numeric',
                 month: 'long',
                 year: 'numeric'
             });
             const plaatsDatumInput = document.getElementById('offerte-plaats-datum').value.trim();
-            document.getElementById('pdf-plaats-datum').textContent = plaatsDatumInput || `Kampen, ${vandaag}`;
+            const plaatsDatum = plaatsDatumInput || `Kampen, ${vandaag}`;
 
             const klantNaam = document.getElementById('klant-naam').value.trim();
             const klantContact = document.getElementById('klant-contact').value.trim();
             const klantAdres = document.getElementById('klant-adres').value.trim();
             const klantPlaats = document.getElementById('klant-plaats').value.trim();
 
-            const adresRegels = [
-                klantNaam ? `<strong>${klantNaam}</strong>` : '',
-                klantContact ? `t.a.v. ${klantContact}` : '',
-                klantAdres,
-                klantPlaats
-            ].filter(Boolean);
-            document.getElementById('pdf-adresblok').innerHTML = adresRegels.join('<br>');
-
             const projectNaam = document.getElementById('projectnaam-veld').value.trim();
             const onderwerpOmschrijving = document.getElementById('onderwerp-project').value.trim();
             const behandeldDoor = document.getElementById('behandeld-door').value.trim();
 
-            let onderwerpSamengesteld = '';
+            let onderwerp = '';
             if (projectNaam && onderwerpOmschrijving) {
-                onderwerpSamengesteld = `${projectNaam} – ${onderwerpOmschrijving}`;
+                onderwerp = `${projectNaam} – ${onderwerpOmschrijving}`;
             } else {
-                onderwerpSamengesteld = projectNaam || onderwerpOmschrijving;
+                onderwerp = projectNaam || onderwerpOmschrijving;
             }
 
+            const achternaam = haalAchternaamOp(klantContact);
+            const aanhef = achternaam
+                ? `Geachte heer/mevrouw ${achternaam},`
+                : 'Geachte heer/mevrouw,';
+
+            return {
+                plaatsDatum,
+                klantNaam,
+                klantContact,
+                klantAdres,
+                klantPlaats,
+                onderwerp,
+                behandeldDoor,
+                aanhef
+            };
+        }
+
+        async function exporteerWord() {
+            const { werkzaamheden, behandeling, materieel, uitgangspunten, prijsPosten, offertePrijs, overigeTekst } = koppelingen;
+            const prijsCount = prijsPosten.length + (offertePrijs ? 1 : 0);
+            if (werkzaamheden.length + behandeling.length + materieel.length + uitgangspunten.length + prijsCount === 0) return;
+
+            const btn = document.getElementById('btn-export-docx');
+            const basis = bouwOfferteBasisGegevens();
+
+            const payload = {
+                klantNaam: basis.klantNaam,
+                klantContact: basis.klantContact,
+                klantAdres: basis.klantAdres,
+                klantPlaats: basis.klantPlaats,
+                plaatsDatum: basis.plaatsDatum,
+                onderwerp: basis.onderwerp,
+                behandeldDoor: basis.behandeldDoor,
+                aanhef: basis.aanhef,
+                werkzaamheden,
+                behandeling,
+                materieel,
+                uitgangspunten,
+                prijsPosten,
+                offertePrijs,
+                overigeTekst
+            };
+
+            try {
+                if (btn) {
+                    btn.disabled = true;
+                    btn.textContent = 'Bezig met Word (.docx)...';
+                }
+
+                const res = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    const foutTekst = await res.text();
+                    throw new Error(foutTekst || `HTTP ${res.status}`);
+                }
+
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Offerte-PlenderWestendorp.docx';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                alert('Word-export mislukt: ' + err.message);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = 'Download Word (.docx)';
+                }
+            }
+        }
+
+        function exporteerPDF() {
+            const { werkzaamheden, behandeling, materieel, uitgangspunten, prijsPosten, offertePrijs, overigeTekst } = koppelingen;
+            const prijsCount = prijsPosten.length + (offertePrijs ? 1 : 0);
+            if (werkzaamheden.length + behandeling.length + materieel.length + uitgangspunten.length + prijsCount === 0) return;
+
+            const basis = bouwOfferteBasisGegevens();
+            document.getElementById('pdf-plaats-datum').textContent = basis.plaatsDatum;
+
+            const adresRegels = [
+                basis.klantNaam ? `<strong>${basis.klantNaam}</strong>` : '',
+                basis.klantContact ? `t.a.v. ${basis.klantContact}` : '',
+                basis.klantAdres,
+                basis.klantPlaats
+            ].filter(Boolean);
+            document.getElementById('pdf-adresblok').innerHTML = adresRegels.join('<br>');
+
             const onderwerpRegel = document.getElementById('pdf-onderwerp-regel');
-            if (onderwerpSamengesteld) {
+            if (basis.onderwerp) {
                 onderwerpRegel.classList.remove('hidden');
-                document.getElementById('pdf-onderwerp-tekst').textContent = onderwerpSamengesteld;
+                document.getElementById('pdf-onderwerp-tekst').textContent = basis.onderwerp;
             } else {
                 onderwerpRegel.classList.add('hidden');
             }
 
             const behandeldRegel = document.getElementById('pdf-behandeld-regel');
-            if (behandeldDoor) {
+            if (basis.behandeldDoor) {
                 behandeldRegel.classList.remove('hidden');
-                document.getElementById('pdf-behandeld-tekst').textContent = behandeldDoor;
-                document.getElementById('pdf-ondertekenaar').textContent = `Ingevuld door ${behandeldDoor}`;
+                document.getElementById('pdf-behandeld-tekst').textContent = basis.behandeldDoor;
+                document.getElementById('pdf-ondertekenaar').textContent = `Ingevuld door ${basis.behandeldDoor}`;
             } else {
                 behandeldRegel.classList.add('hidden');
                 document.getElementById('pdf-ondertekenaar').textContent = 'Ingevuld door ………';
             }
 
-            const achternaam = haalAchternaamOp(klantContact);
-            document.getElementById('pdf-aanhef').textContent = achternaam
-                ? `Geachte heer/mevrouw ${achternaam},`
-                : 'Geachte heer/mevrouw,';
+            document.getElementById('pdf-aanhef').textContent = basis.aanhef;
 
             const alleUitgangspunten = [...uitgangspunten, ...materieel];
             vulPdfSec('pdf-sec-uitgangspunten', 'pdf-list-uitgangspunten', alleUitgangspunten);
