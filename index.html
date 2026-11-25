@@ -48,7 +48,6 @@
             padding: 20px 28px 64px 28px;
         }
 
-        /* Bovenste titelstrook */
         .top-rule {
             border-top: 1px solid var(--line-strong);
             margin-bottom: 14px;
@@ -91,7 +90,6 @@
             background: var(--bg-surface);
         }
 
-        /* Tab-balk met alleen Overzicht */
         .tab-bar {
             display: flex;
             align-items: stretch;
@@ -119,7 +117,6 @@
             color: var(--accent-fg);
         }
 
-        /* Hoofdlayout: Linker zijbalk + Rechter werkblad */
         .workspace-grid {
             display: grid;
             grid-template-columns: 270px 1px 1fr;
@@ -141,7 +138,6 @@
             padding-left: 34px;
         }
 
-        /* Zijbalk-items */
         .nav-item {
             display: block;
             width: 100%;
@@ -183,7 +179,6 @@
             color: #c7c6c2;
         }
 
-        /* Rechter koppen & subregels */
         .pane-heading {
             font-family: var(--font-serif);
             font-size: 28px;
@@ -204,7 +199,6 @@
             border-bottom: 1px solid var(--line-subtle);
         }
 
-        /* Vragen & gekoppelde blokken */
         .question-block {
             padding: 15px 0;
             border-bottom: 1px solid var(--line-subtle);
@@ -281,7 +275,6 @@
             flex-shrink: 0;
         }
 
-        /* Gekoppelde vervolgvragen */
         .linked-box {
             margin-top: 12px;
             padding: 14px 16px;
@@ -318,7 +311,6 @@
             opacity: 0.9;
         }
 
-        /* Gekoppelde resultaten onderaan het overzicht */
         .results-panel {
             margin-top: 34px;
             padding: 18px 20px;
@@ -385,7 +377,6 @@
             font-weight: 700;
         }
 
-        /* Onderaan: Reset, Word (.docx) & PDF export */
         .bottom-bar {
             margin-top: 28px;
             padding-top: 18px;
@@ -453,7 +444,6 @@
             display: none !important;
         }
 
-        /* PDF-weergave afgestemd op Offerte_voor html.docx */
         #pdf-sheet {
             display: none;
         }
@@ -543,16 +533,14 @@
     <div id="app-shell" class="container">
         <div class="top-rule"></div>
 
-        <!-- Bovenste kopregel -->
         <header class="header-row">
             <h1 class="doc-title">Offerte Vragenlijst<br>Totaalonderhoud &amp; Opname</h1>
             <div class="brand-mark">
                 <img src="./PlenderWestendorp_app-icoon_512.png" alt="PlenderWestendorp logo" class="brand-logo">
-                <span>PlenderWestendorp · v1.4</span>
+                <span>PlenderWestendorp · v1.6</span>
             </div>
         </header>
 
-        <!-- Alleen tab Overzicht -->
         <nav class="tab-bar" aria-label="Overzicht">
             <button type="button" id="tab-overzicht" class="tab-btn active" onclick="focusOverzicht()">Overzicht</button>
         </nav>
@@ -560,7 +548,6 @@
         <form id="offerte-form" onsubmit="return false;">
             <div class="workspace-grid">
 
-                <!-- LINKER ZIJBALKEN: SECTIES MET LIVE TELLERS -->
                 <aside class="sidebar" aria-label="Onderdelen">
                     <button type="button" class="nav-item active" data-sec="sec-basis" onclick="selectSectie('sec-basis')">
                         <span class="nav-item-title">1. Opdracht &amp; Pand</span>
@@ -586,7 +573,6 @@
 
                 <div class="vertical-divider"></div>
 
-                <!-- RECHTER WERKBLAD (OVERZICHT) -->
                 <main class="main-pane" id="overzicht-pane">
 
                     <!-- SECTIE 1: OPDRACHT & PAND -->
@@ -676,7 +662,6 @@
                                 <option value="moeilijk">Lastig bereikbaar (dakkapel / uitbouw / water / steeg)</option>
                             </select>
 
-                            <!-- KOPPELING: STEIGER AANWEZIG? -->
                             <div id="koppel-steiger" class="linked-box hidden">
                                 <div class="linked-title">Gekoppelde vraag · Steiger aanwezig?</div>
                                 <div class="choice-grid">
@@ -690,7 +675,6 @@
                                     </label>
                                 </div>
 
-                                <!-- Sub-koppeling JA -->
                                 <div id="sub-steiger-ja" class="linked-box hidden">
                                     <label class="choice-row">
                                         <input type="checkbox" id="steiger-keuring" onchange="verwerkAlles()">
@@ -702,7 +686,6 @@
                                     </label>
                                 </div>
 
-                                <!-- Sub-koppeling NEE -->
                                 <div id="sub-steiger-nee" class="linked-box hidden">
                                     <span class="field-hint">Selecteer benodigd materieel:</span>
                                     <div class="choice-grid">
@@ -777,7 +760,7 @@
                         </div>
                     </section>
 
-                    <!-- SECTIE 3: WERKZAAMHEDEN & GEKOPPELDE SUBVRAGEN -->
+                    <!-- SECTIE 3: WERKZAAMHEDEN -->
                     <section id="sec-werk" class="pane-section">
                         <h2 class="pane-heading">3. Werkzaamheden</h2>
                         <div class="pane-meta" id="meta-sec-werk">0 gekoppeld · start leeg</div>
@@ -808,7 +791,6 @@
                             </div>
                         </div>
 
-                        <!-- GEKOPPELDE VRAGEN: BUITENSCHILDERWERK -->
                         <div id="koppel-buiten" class="linked-box hidden">
                             <div class="linked-title">Gekoppeld · Buitenschilderwerk</div>
                             <div class="choice-grid">
@@ -865,7 +847,6 @@
                             </div>
                         </div>
 
-                        <!-- GEKOPPELDE VRAGEN: BINNENSCHILDERWERK & BEHANG / SCANWERK -->
                         <div id="koppel-binnen" class="linked-box hidden">
                             <div class="linked-title">Gekoppeld · Binnenschilderwerk &amp; behang / scanwerk</div>
                             <div class="choice-grid">
@@ -949,7 +930,6 @@
                             </div>
                         </div>
 
-                        <!-- GEKOPPELDE VRAGEN: GLASZETTEN -->
                         <div id="koppel-glas" class="linked-box hidden">
                             <div class="linked-title">Gekoppeld · Glaszetten</div>
                             <div class="choice-grid">
@@ -1035,7 +1015,6 @@
                             </div>
                         </div>
 
-                        <!-- GEKOPPELDE VRAGEN: TIMMERWERK, HOUTROT & AFBOUW -->
                         <div id="koppel-timmer" class="linked-box hidden">
                             <div class="linked-title">Gekoppeld · Timmerwerk, houtrot &amp; afbouw</div>
                             <div class="choice-grid">
@@ -1082,7 +1061,6 @@
                             </div>
                         </div>
 
-                        <!-- GEKOPPELDE VRAGEN: GEVELONDERHOUD, GEVELREINIGING & ISOLATIE -->
                         <div id="koppel-gevel" class="linked-box hidden">
                             <div class="linked-title">Gekoppeld · Gevelonderhoud, gevelreiniging, isolatie &amp; verduurzaming</div>
                             <div class="choice-grid">
@@ -1213,17 +1191,13 @@
         </form>
     </div>
 
-    <!-- ======================================================
-         PDF-DOCUMENT (AFGESTEMD OP OFFERTE_VOOR HTML.DOCX)
-         ====================================================== -->
+    <!-- PDF-DOCUMENT -->
     <div id="pdf-sheet">
-        <!-- Adresblok links + Plaats, datum rechts -->
         <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 18px;">
             <div id="pdf-adresblok" style="min-height: 60px;"></div>
             <div style="text-align: right; white-space: nowrap;" id="pdf-plaats-datum"></div>
         </div>
 
-        <!-- Onderwerp & Behandeld door -->
         <div style="margin-bottom: 16px;">
             <div id="pdf-onderwerp-regel" style="display: flex; gap: 14px; margin-bottom: 4px;">
                 <span style="min-width: 120px;">Onderwerp</span>
@@ -1237,35 +1211,29 @@
             </div>
         </div>
 
-        <!-- Aanhef & intro -->
         <p id="pdf-aanhef" style="margin: 0 0 10px 0;"></p>
         <p style="margin: 0 0 14px 0;">Hierbij ontvangt u onze offerte voor het bovengenoemde project. De offerte is tot stand gekomen op basis van de volgende uitgangspunten:</p>
 
-        <!-- Uitgangspunten -->
         <div class="pdf-sec" id="pdf-sec-uitgangspunten">
             <h2 class="pdf-h2">Uitgangspunten</h2>
             <ul class="pdf-list" id="pdf-list-uitgangspunten"></ul>
         </div>
 
-        <!-- Werkzaamheden -->
         <div class="pdf-sec" id="pdf-sec-werkzaamheden">
             <h2 class="pdf-h2">Werkzaamheden</h2>
             <ul class="pdf-list" id="pdf-list-werkzaamheden"></ul>
         </div>
 
-        <!-- Behandeling -->
         <div class="pdf-sec" id="pdf-sec-behandeling">
             <h2 class="pdf-h2">Behandeling</h2>
             <ul class="pdf-list" id="pdf-list-behandeling"></ul>
         </div>
 
-        <!-- Overige details -->
         <div class="pdf-sec hidden" id="pdf-sec-overige">
             <h2 class="pdf-h2">Overige details</h2>
             <p id="pdf-overige-tekst" style="margin: 0; white-space: pre-line;"></p>
         </div>
 
-        <!-- Prijsaanbieding -->
         <div class="pdf-sec" id="pdf-sec-prijs">
             <h2 class="pdf-h2">Prijsaanbieding</h2>
             <p style="margin: 0 0 8px 0;">De beschreven werkzaamheden in de offerte kunnen wij aanbieden voor:</p>
@@ -1277,7 +1245,6 @@
             <p style="margin: 10px 0 0 0; font-size: 10.5pt; color: #333;">Overige niet benoemde werkzaamheden vallen buiten deze opgave.</p>
         </div>
 
-        <!-- Algemene voorwaarden en condities -->
         <div class="pdf-sec">
             <h2 class="pdf-h2">Algemene voorwaarden en condities</h2>
             <p style="margin: 0 0 6px 0;">De prijzen zijn gebaseerd op de huidige loon- en materiaalkosten. Onze prijzen staan vast tot 3 maanden na offertedatum. Na deze datum kunnen wijzigingen worden doorberekend.</p>
@@ -1285,7 +1252,6 @@
             <p style="margin: 0;">Betalingen binnen 14 dagen na factuurdatum.</p>
         </div>
 
-        <!-- Afsluiting & akkoord -->
         <div class="pdf-sec" style="margin-top: 18px;">
             <p style="margin: 0 0 18px 0;">Vertrouwende u hiermee een passende aanbieding te hebben gedaan. Bij akkoord ontvangen wij graag een getekend exemplaar retour.</p>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 36px;">
@@ -1390,7 +1356,6 @@
                 'sec-planning': 0
             };
 
-            // 1. OPDRACHT & PAND
             const opdrachtgever = document.getElementById('opdrachtgever').value;
             const pandtype = document.getElementById('pandtype').value;
             const overigeBasis = document.getElementById('overige-basis').value.trim();
@@ -1428,7 +1393,6 @@
                 cnt['sec-basis']++;
             }
 
-            // 2. HOOGTE, STEIGER & BOUWLAGEN
             const hoogte = document.getElementById('werkhoogte').value;
             const steigerVraagZichtbaar = (hoogte === 'verd1' || hoogte === 'verd2plus' || hoogte === 'moeilijk');
             toggle('koppel-steiger', steigerVraagZichtbaar);
@@ -1496,7 +1460,6 @@
                 cnt['sec-hoogte']++;
             }
 
-            // 3. WERKZAAMHEDEN & BEHANDELING
             toggle('koppel-buiten', dBuiten);
             toggle('koppel-binnen', dBinnen);
             toggle('koppel-glas', dGlas);
@@ -1738,7 +1701,6 @@
                 }
             }
 
-            // 4. PLANNING, PRIJS & OVERIGE DETAILS
             const ref = document.getElementById('project-ref').value.trim();
             const planning = document.getElementById('planning-keuze').value;
             const prijsRaw = document.getElementById('prijs-posten').value;
