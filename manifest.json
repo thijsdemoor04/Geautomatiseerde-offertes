@@ -1,0 +1,19 @@
+{
+  "name": "Offerte Vragenlijst — PlenderWestendorp",
+  "short_name": "PW Offerte",
+  "description": "Offerte vragenlijst en opname voor totaalonderhoud — PlenderWestendorp",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#e9e8e5",
+  "theme_color": "#e9e8e5",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./PlenderWestendorp_app-icoon_512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
