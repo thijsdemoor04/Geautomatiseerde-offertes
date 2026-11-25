@@ -546,7 +546,7 @@
             <h1 class="doc-title">Offerte Vragenlijst<br>Totaalonderhoud &amp; Opname</h1>
             <div class="brand-mark">
                 <img src="./PlenderWestendorp_app-icoon_512.png" alt="PlenderWestendorp logo" class="brand-logo">
-                <span>PlenderWestendorp · v3.3</span>
+                <span>PlenderWestendorp · v3.4</span>
             </div>
         </header>
 
@@ -1125,26 +1125,18 @@
                         <!-- SECTIE 4: PLANNING & OFFERTE PRIJS -->
                         <section id="sec-planning" class="pane-section">
                             <h2 class="pane-heading">4. Planning &amp; Offerte prijs</h2>
-                            <div class="pane-meta" id="meta-sec-planning">0 gekoppeld · projectnummer en offerte prijs vereist</div>
+                            <div class="pane-meta" id="meta-sec-planning">0 gekoppeld · projectreferentie en offerte prijs vereist</div>
 
                             <div class="question-block">
-                                <div class="form-grid-2">
-                                    <div>
-                                        <label class="field-label" for="project-ref">Project / Referentienummer <span class="req-mark">*</span></label>
-                                        <input type="text" id="project-ref" required oninput="verwerkAlles()" placeholder="">
-                                    </div>
-                                    <div>
-                                        <label class="field-label" for="planning-keuze">Gewenste uitvoering / uitgangspunt</label>
-                                        <select id="planning-keuze" onchange="verwerkAlles()">
-                                            <option value="">-- Kies --</option>
-                                            <option value="Eigen opname op locatie">Eigen opname op locatie</option>
-                                            <option value="Zo spoedig mogelijk">Zo spoedig mogelijk</option>
-                                            <option value="Voorjaar / Zomer">Voorjaar / Zomer</option>
-                                            <option value="Najaar / Winterschilder">Najaar / Winterschilder</option>
-                                            <option value="MJOP / Meerjarenonderhoud">MJOP / Meerjarenonderhoud</option>
-                                        </select>
-                                    </div>
-                                </div>
+                                <label class="field-label" for="planning-keuze">Gewenste uitvoering / uitgangspunt</label>
+                                <select id="planning-keuze" onchange="verwerkAlles()">
+                                    <option value="">-- Kies --</option>
+                                    <option value="Eigen opname op locatie">Eigen opname op locatie</option>
+                                    <option value="Zo spoedig mogelijk">Zo spoedig mogelijk</option>
+                                    <option value="Voorjaar / Zomer">Voorjaar / Zomer</option>
+                                    <option value="Najaar / Winterschilder">Najaar / Winterschilder</option>
+                                    <option value="MJOP / Meerjarenonderhoud">MJOP / Meerjarenonderhoud</option>
+                                </select>
                             </div>
 
                             <!-- 1 SAMENGEVOEGD ONDERDEEL: EIGEN INVULLEN + POSTEN & M² BEREKENING -->
@@ -1171,15 +1163,21 @@
                                 <span class="field-hint">Aanvullende beschrijving van wat er gebeurt, maten, uitzonderingen of afspraken op de offerte.</span>
                                 <textarea id="overige-details" rows="4" oninput="verwerkAlles()" placeholder=""></textarea>
                             </div>
+
+                            <div class="question-block" id="blok-projectreferentie-onderaan">
+                                <label class="field-label" for="project-ref">Projectreferentie <span class="req-mark">*</span></label>
+                                <span class="field-hint">Onderaan apart opgenomen en meegenomen in de bestandsnaam en offerte.</span>
+                                <input type="text" id="project-ref" required oninput="verwerkAlles()" placeholder="">
+                            </div>
                         </section>
 
                         <!-- SECTIE 5: GEKOPPELDE ITEMS IN HET OVERZICHT -->
                         <section id="sec-koppelingen" class="results-panel">
                             <h2 class="results-heading">5. Gekoppelde items</h2>
-                            <div class="pane-meta" id="koppelingen-submeta">0 gekoppeld · projectnummer en offerte prijs vereist</div>
+                            <div class="pane-meta" id="koppelingen-submeta">0 gekoppeld · projectreferentie en offerte prijs vereist</div>
 
                             <div id="koppelingen-leeg">
-                                <span class="field-hint" style="margin:0;">Nog niets gekoppeld. Zodra je hierboven keuzes, projectnummer of posten invult, verschijnen hier de gekoppelde onderdelen en de Offerte prijs.</span>
+                                <span class="field-hint" style="margin:0;">Nog niets gekoppeld. Zodra je hierboven keuzes, projectreferentie of posten invult, verschijnen hier de gekoppelde onderdelen en de Offerte prijs.</span>
                             </div>
 
                             <div id="koppelingen-gevuld" class="hidden">
@@ -1196,7 +1194,7 @@
                                     <div id="list-prijs"></div>
                                     <div id="list-offerte-prijs" class="offerte-prijs-totaal-preview hidden"></div>
                                     <div id="offerte-prijs-ontbreekt" class="offerte-prijs-warning hidden">
-                                        <span id="warn-tekst"><strong>Let op:</strong> Vul nog een <strong>Project / Referentienummer</strong> en een bedrag in.</span>
+                                        <span id="warn-tekst"><strong>Let op:</strong> Vul nog een <strong>Projectreferentie</strong> en een bedrag in.</span>
                                         <button type="button" class="action-link-btn" style="margin-top:0;" onclick="gaNaarOntbrekend()">Invullen</button>
                                     </div>
                                 </div>
@@ -1870,15 +1868,11 @@
                 }
             }
 
-            // 4. PLANNING, PRIJS, SAMENGEVOEGD INVULLEN & OVERIGE DETAILS
-            const ref = document.getElementById('project-ref').value.trim();
+            // 4. PLANNING, SAMENGEVOEGD INVULLEN, OVERIGE DETAILS & PROJECTREFERENTIE ONDERAAN
             const planning = document.getElementById('planning-keuze').value;
             const overigeDetails = document.getElementById('overige-details').value.trim();
+            const ref = document.getElementById('project-ref').value.trim();
 
-            if (ref) {
-                uitgangspunten.push(`Projectreferentie: ${ref}.`);
-                cnt['sec-planning']++;
-            }
             if (planning) {
                 uitgangspunten.push(`${planning}.`);
                 cnt['sec-planning']++;
@@ -1944,6 +1938,11 @@
                 cnt['sec-planning']++;
             }
 
+            if (ref) {
+                uitgangspunten.push(`Projectreferentie: ${ref}.`);
+                cnt['sec-planning']++;
+            }
+
             koppelingen = {
                 werkzaamheden,
                 werkGroepen,
@@ -1973,7 +1972,7 @@
                 const meta = document.getElementById('meta-' + secId);
                 if (sub) sub.textContent = `${n} gekoppeld`;
                 if (meta) meta.textContent = secId === 'sec-planning'
-                    ? `${n} gekoppeld · projectnummer en offerte prijs vereist`
+                    ? `${n} gekoppeld · projectreferentie en offerte prijs vereist`
                     : `${n} gekoppeld`;
             });
 
@@ -1999,7 +1998,7 @@
             if (totaal === 0) {
                 leegBox.classList.remove('hidden');
                 gevuldBox.classList.add('hidden');
-                submeta.textContent = '0 gekoppeld · projectnummer en offerte prijs vereist';
+                submeta.textContent = '0 gekoppeld · projectreferentie en offerte prijs vereist';
                 return;
             }
 
@@ -2007,7 +2006,7 @@
             gevuldBox.classList.remove('hidden');
             submeta.textContent = exportKlaar
                 ? `${totaal} gekoppeld · Offerte prijs ${offertePrijs} · Project ${projectRef}`
-                : `${totaal} gekoppeld · Vul projectnummer en een bedrag in om te downloaden`;
+                : `${totaal} gekoppeld · Vul projectreferentie en een bedrag in om te downloaden`;
 
             vulUl('grp-werk', 'list-werk', alleWerk);
             vulUl('grp-steiger', 'list-steiger', materieel);
@@ -2042,7 +2041,7 @@
             }
 
             const ontbreekt = [];
-            if (!projectRef) ontbreekt.push('Project / Referentienummer');
+            if (!projectRef) ontbreekt.push('Projectreferentie');
             if (!offertePrijs) ontbreekt.push('een bedrag');
 
             if (ontbreekt.length > 0 && aantalGekoppeld > 0) {
@@ -2135,6 +2134,9 @@
                 klantPlaats: basis.klantPlaats,
                 projectNaam: basis.projectNaam,
                 projectNummer: basis.projectNummer,
+                projectReferentie: basis.projectNummer,
+                projectReferentieOnderaan: true,
+                algemeneOfferteTekst: true,
                 plaatsDatum: basis.plaatsDatum,
                 onderwerp: basis.onderwerp,
                 behandeldDoor: basis.behandeldDoor,
