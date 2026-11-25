@@ -332,16 +332,9 @@
 
         .extra-row-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr auto;
+            grid-template-columns: 2fr 1fr auto;
             gap: 10px;
             align-items: end;
-        }
-
-        .extra-row-total {
-            margin-top: 10px;
-            font-size: 12.5px;
-            font-weight: 600;
-            color: var(--ink-main);
         }
 
         .extra-row-note {
@@ -349,14 +342,15 @@
         }
 
         .opvulling-summary {
-            margin-top: 12px;
-            padding: 8px 12px;
-            background-color: rgba(255, 255, 255, 0.6);
-            border: 1px solid var(--line-subtle);
-            font-size: 13px;
+            margin-top: 14px;
+            padding: 11px 14px;
+            background-color: #ffffff;
+            border: 1px solid var(--line-strong);
+            font-size: 14.5px;
             font-weight: 700;
             display: flex;
             justify-content: space-between;
+            align-items: center;
             gap: 12px;
         }
 
@@ -533,7 +527,7 @@
             <h1 class="doc-title">Offerte Vragenlijst<br>Totaalonderhoud &amp; Opname</h1>
             <div class="brand-mark">
                 <img src="./PlenderWestendorp_app-icoon_512.png" alt="PlenderWestendorp logo" class="brand-logo">
-                <span>PlenderWestendorp · v2.8</span>
+                <span>PlenderWestendorp · v3.0</span>
             </div>
         </header>
 
@@ -601,11 +595,11 @@
                                         <input type="text" id="klant-plaats" oninput="verwerkAlles()" placeholder="">
                                     </div>
                                     <div>
-                                        <label class="field-label" for="projectnaam-veld">Projectnaam (optioneel)</label>
+                                        <label class="field-label" for="projectnaam-veld">Projectnaam</label>
                                         <input type="text" id="projectnaam-veld" oninput="verwerkAlles()" placeholder="">
                                     </div>
                                     <div>
-                                        <label class="field-label" for="onderwerp-project">Omschrijving werkzaamheden · Onderwerp (optioneel)</label>
+                                        <label class="field-label" for="onderwerp-project">Omschrijving werkzaamheden · Onderwerp</label>
                                         <input type="text" id="onderwerp-project" oninput="verwerkAlles()" placeholder="">
                                     </div>
                                     <div>
@@ -617,7 +611,7 @@
                                         </datalist>
                                     </div>
                                     <div>
-                                        <label class="field-label" for="offerte-plaats-datum">Plaats, datum (optioneel, standaard Kampen + vandaag)</label>
+                                        <label class="field-label" for="offerte-plaats-datum">Plaats, datum (standaard Kampen + vandaag)</label>
                                         <input type="text" id="offerte-plaats-datum" oninput="verwerkAlles()" placeholder="">
                                     </div>
                                 </div>
@@ -648,7 +642,7 @@
                             </div>
 
                             <div class="question-block">
-                                <label class="field-label" for="overige-basis">Overige details · Opdracht &amp; Pand (optioneel)</label>
+                                <label class="field-label" for="overige-basis">Overige details · Opdracht &amp; Pand</label>
                                 <textarea id="overige-basis" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
                             </div>
                         </section>
@@ -761,7 +755,7 @@
                             </div>
 
                             <div class="question-block">
-                                <label class="field-label" for="overige-hoogte">Overige details · Hoogte, Steiger &amp; Bouwlagen (optioneel)</label>
+                                <label class="field-label" for="overige-hoogte">Overige details · Hoogte, Steiger &amp; Bouwlagen</label>
                                 <textarea id="overige-hoogte" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
                             </div>
                         </section>
@@ -848,7 +842,7 @@
                                 </div>
 
                                 <div style="margin-top:12px;">
-                                    <label class="field-label" for="overige-buiten">Overige details · Buitenschilderwerk (optioneel)</label>
+                                    <label class="field-label" for="overige-buiten">Overige details · Buitenschilderwerk</label>
                                     <textarea id="overige-buiten" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
                                 </div>
                             </div>
@@ -931,7 +925,7 @@
                                 </div>
 
                                 <div style="margin-top:12px;">
-                                    <label class="field-label" for="overige-binnen">Overige details · Binnenschilderwerk &amp; behang / scanwerk (optioneel)</label>
+                                    <label class="field-label" for="overige-binnen">Overige details · Binnenschilderwerk &amp; behang / scanwerk</label>
                                     <textarea id="overige-binnen" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
                                 </div>
                             </div>
@@ -1016,7 +1010,7 @@
                                 </div>
 
                                 <div style="margin-top:12px;">
-                                    <label class="field-label" for="overige-glas">Overige details · Glaszetten (optioneel)</label>
+                                    <label class="field-label" for="overige-glas">Overige details · Glaszetten</label>
                                     <textarea id="overige-glas" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
                                 </div>
                             </div>
@@ -1062,7 +1056,7 @@
                                 </label>
 
                                 <div style="margin-top:12px;">
-                                    <label class="field-label" for="overige-timmer">Overige details · Timmerwerk, houtrot &amp; afbouw (optioneel)</label>
+                                    <label class="field-label" for="overige-timmer">Overige details · Timmerwerk, houtrot &amp; afbouw</label>
                                     <textarea id="overige-timmer" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
                                 </div>
                             </div>
@@ -1103,7 +1097,7 @@
                                 </div>
 
                                 <div style="margin-top:12px;">
-                                    <label class="field-label" for="overige-gevel">Overige details · Gevelreiniging, gevelonderhoud &amp; isolatie (optioneel)</label>
+                                    <label class="field-label" for="overige-gevel">Overige details · Gevelreiniging, gevelonderhoud &amp; isolatie</label>
                                     <textarea id="overige-gevel" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
                                 </div>
                             </div>
@@ -1112,13 +1106,13 @@
                         <!-- SECTIE 4: PLANNING & OFFERTE PRIJS -->
                         <section id="sec-planning" class="pane-section">
                             <h2 class="pane-heading">4. Planning &amp; Offerte prijs</h2>
-                            <div class="pane-meta" id="meta-sec-planning">0 gekoppeld · offerte prijs wordt automatisch aangevuld boven opvulling</div>
+                            <div class="pane-meta" id="meta-sec-planning">0 gekoppeld · projectnummer en opvulling vereist</div>
 
                             <div class="question-block">
                                 <div class="form-grid-2">
                                     <div>
-                                        <label class="field-label" for="project-ref">Project / Referentie (optioneel)</label>
-                                        <input type="text" id="project-ref" oninput="verwerkAlles()" placeholder="">
+                                        <label class="field-label" for="project-ref">Project / Referentienummer <span class="req-mark">*</span></label>
+                                        <input type="text" id="project-ref" required oninput="verwerkAlles()" placeholder="">
                                     </div>
                                     <div>
                                         <label class="field-label" for="planning-keuze">Gewenste uitvoering / uitgangspunt</label>
@@ -1135,36 +1129,41 @@
                             </div>
 
                             <div class="question-block">
-                                <label class="field-label" for="prijs-posten">Prijsregels / onderdelen op de offerte (optioneel, standaard € Niet gerekend)</label>
+                                <label class="field-label" for="prijs-posten">Prijsregels / onderdelen op de offerte (standaard € Niet gerekend)</label>
                                 <span class="field-hint">Zet elke regel op een nieuwe regel (bijv. "Binnen schilderwerk 2 lokalen"). Op de offerte komt automatisch € Niet gerekend te staan.</span>
                                 <textarea id="prijs-posten" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
                             </div>
 
-                            <div class="question-block">
-                                <label class="field-label" for="offerte-prijs">Offerte prijs <span class="req-mark">*</span></label>
-                                <span class="field-hint" id="offerte-prijs-hint">Wordt automatisch afgestemd zodat dit minimaal gelijk is aan het totaal van Opvulling.</span>
-                                <input type="text" id="offerte-prijs" oninput="onOffertePrijsInput()" placeholder="">
-                            </div>
-
-                            <!-- DIRECT IN HET OVERZICHT: OPVULLING (OPTIONEEL) -->
+                            <!-- DIRECT IN HET OVERZICHT: OPVULLING -> TOTAAL WORDT OFFERTE PRIJS -->
                             <div class="question-block" id="overzicht-opvulling">
                                 <div class="linked-box" style="margin-top:0;">
-                                    <div class="linked-title">Opvulling (optioneel)</div>
-                                    <span class="field-hint">Kies een post, vul zelf de prijs per m² en het aantal m² in. Het totaal wordt automatisch berekend en meegenomen in de offerteprijs.</span>
+                                    <div class="linked-title">Opvulling &amp; Offerte prijs <span class="req-mark">*</span></div>
+                                    <span class="field-hint">Schrijf zelf een post (bijv. reisuren, wanden sauzen of glas plaatsen) en vul het bedrag in. Het totaal hieronder wordt de Offerte prijs.</span>
+
+                                    <datalist id="opvulling-suggesties">
+                                        <option value="Wanden sauzen">
+                                        <option value="Plafonds sauzen">
+                                        <option value="Gevelbetimmering schilderen">
+                                        <option value="Gevel reinigen">
+                                        <option value="Vliesbehang aanbrengen">
+                                        <option value="Glas plaatsen">
+                                        <option value="Stucwerk wanden">
+                                        <option value="Reisuren">
+                                    </datalist>
 
                                     <div id="extra-regels-lijst"></div>
 
                                     <button type="button" class="action-link-btn" onclick="voegExtraRegelToe()">+ Opvulling regel toevoegen</button>
 
                                     <div class="opvulling-summary" id="opvulling-totaal-balk">
-                                        <span>Totaal opvulling</span>
+                                        <span>Offerte prijs</span>
                                         <span id="opvulling-totaal-waarde">€ 0,00</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="question-block">
-                                <label class="field-label" for="overige-details">Overige details (optioneel)</label>
+                                <label class="field-label" for="overige-details">Overige details</label>
                                 <span class="field-hint">Aanvullende beschrijving van wat er gebeurt, maten, uitzonderingen of afspraken op de offerte.</span>
                                 <textarea id="overige-details" rows="4" oninput="verwerkAlles()" placeholder=""></textarea>
                             </div>
@@ -1173,10 +1172,10 @@
                         <!-- SECTIE 5: GEKOPPELDE ITEMS IN HET OVERZICHT -->
                         <section id="sec-koppelingen" class="results-panel">
                             <h2 class="results-heading">5. Gekoppelde items</h2>
-                            <div class="pane-meta" id="koppelingen-submeta">0 gekoppeld</div>
+                            <div class="pane-meta" id="koppelingen-submeta">0 gekoppeld · projectnummer en offerte prijs vereist</div>
 
                             <div id="koppelingen-leeg">
-                                <span class="field-hint" style="margin:0;">Nog niets gekoppeld. Zodra je hierboven keuzes of overige details invult, verschijnen hier de gekoppelde onderdelen en de koppeling met de offerte prijs.</span>
+                                <span class="field-hint" style="margin:0;">Nog niets gekoppeld. Zodra je hierboven keuzes, projectnummer of opvulling invult, verschijnen hier de gekoppelde onderdelen en de Offerte prijs.</span>
                             </div>
 
                             <div id="koppelingen-gevuld" class="hidden">
@@ -1189,12 +1188,12 @@
                                     <ul class="clean-list" id="list-steiger"></ul>
                                 </div>
                                 <div class="coupling-group" id="grp-prijs">
-                                    <h3 class="coupling-group-title">Prijsaanbieding &amp; koppeling offerte prijs</h3>
+                                    <h3 class="coupling-group-title">Prijsaanbieding &amp; Offerte prijs</h3>
                                     <div id="list-prijs"></div>
                                     <div id="list-offerte-prijs" class="offerte-prijs-totaal-preview hidden"></div>
                                     <div id="offerte-prijs-ontbreekt" class="offerte-prijs-warning hidden">
-                                        <span><strong>Let op:</strong> Vul nog een <strong>Offerte prijs</strong> of <strong>Opvulling</strong> in om deze te koppelen aan de <span id="warn-item-count">0</span> gekoppelde items.</span>
-                                        <button type="button" class="action-link-btn" style="margin-top:0;" onclick="gaNaarOffertePrijs()">Offerte prijs invullen</button>
+                                        <span id="warn-tekst"><strong>Let op:</strong> Vul nog een <strong>Project / Referentienummer</strong> en een bedrag bij <strong>Opvulling</strong> in.</span>
+                                        <button type="button" class="action-link-btn" style="margin-top:0;" onclick="gaNaarOntbrekend()">Invullen</button>
                                     </div>
                                 </div>
                                 <div class="coupling-group" id="grp-aandacht">
@@ -1220,22 +1219,11 @@
     <script>
         const WORKER_URL = 'https://plender-offerte-docx.thijsdemoor.workers.dev/';
 
-        const OPVULLING_POSTEN = [
-            { code: 'SB02', omschrijving: 'Wanden sauzen' },
-            { code: 'SB03', omschrijving: 'Plafonds sauzen' },
-            { code: 'SB08', omschrijving: 'Gevelbetimmering schilderen' },
-            { code: 'SU10', omschrijving: 'Gevel reinigen' },
-            { code: 'W06', omschrijving: 'Vliesbehang aanbrengen' },
-            { code: 'G01', omschrijving: 'Glas plaatsen' },
-            { code: 'A12', omschrijving: 'Stucwerk wanden' }
-        ];
-
         function maakStandaardExtraRegels() {
-            return [{ postCode: 'SB02', prijsPerM2: '', m2: '', opmerking: '' }];
+            return [{ omschrijving: '', bedrag: '', opmerking: '' }];
         }
 
         let extraRegels = maakStandaardExtraRegels();
-        let handmatigeOffertePrijs = '';
 
         let koppelingen = {
             werkzaamheden: [],
@@ -1246,6 +1234,7 @@
             prijsPosten: [],
             offertePrijs: '',
             opvullingTotaal: 0,
+            projectRef: '',
             overigeTekst: '',
             perSectie: {
                 'sec-basis': 0,
@@ -1265,11 +1254,17 @@
             }
         }
 
-        function gaNaarOffertePrijs() {
-            const veld = document.getElementById('offerte-prijs');
-            if (veld) {
-                veld.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                setTimeout(() => veld.focus(), 250);
+        function gaNaarOntbrekend() {
+            const refVeld = document.getElementById('project-ref');
+            if (refVeld && !refVeld.value.trim()) {
+                refVeld.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => refVeld.focus(), 250);
+                return;
+            }
+            const eersteBedrag = document.querySelector('#extra-regels-lijst input[type="number"]');
+            if (eersteBedrag) {
+                eersteBedrag.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => eersteBedrag.focus(), 250);
             }
         }
 
@@ -1335,17 +1330,20 @@
                 .replace(/>/g, '&gt;');
         }
 
-        function onOffertePrijsInput() {
-            const veld = document.getElementById('offerte-prijs');
-            handmatigeOffertePrijs = veld ? veld.value : '';
-            verwerkAlles();
+        function sanitizeBestandsnaamDeel(str = '', fallback = '') {
+            const cleaned = String(str || '')
+                .trim()
+                .replace(/[\\/:*?"<>|]+/g, '')
+                .replace(/\s+/g, '_')
+                .replace(/_+/g, '_')
+                .replace(/^_+|_+$/g, '');
+            return cleaned || fallback;
         }
 
         function voegExtraRegelToe() {
             extraRegels.push({
-                postCode: 'SB02',
-                prijsPerM2: '',
-                m2: '',
+                omschrijving: '',
+                bedrag: '',
                 opmerking: ''
             });
             renderExtraRegels();
@@ -1361,66 +1359,34 @@
             verwerkAlles();
         }
 
-        function updateExtraRegel(idx, veld, waarde, herteken = false) {
+        function updateExtraRegel(idx, veld, waarde) {
             if (!extraRegels[idx]) return;
             extraRegels[idx][veld] = waarde;
-            if (herteken) {
-                renderExtraRegels();
-            } else {
-                updateRegelTotaalLabel(idx);
-            }
             verwerkAlles();
-        }
-
-        function berekenExtraRegel(rg) {
-            const post = OPVULLING_POSTEN.find(p => p.code === rg.postCode) || OPVULLING_POSTEN[0];
-            const prijsPerM2 = numVal(rg.prijsPerM2);
-            const m2 = numVal(rg.m2);
-            const bedrag = (prijsPerM2 > 0 && m2 > 0) ? prijsPerM2 * m2 : 0;
-            return { post, prijsPerM2, m2, bedrag };
-        }
-
-        function updateRegelTotaalLabel(idx) {
-            const rg = extraRegels[idx];
-            const lbl = document.getElementById(`opvulling-regel-totaal-${idx}`);
-            if (!rg || !lbl) return;
-            const calc = berekenExtraRegel(rg);
-            lbl.textContent = `Totaal regel: ${calc.bedrag > 0 ? fmtEuro(calc.bedrag) : '€ Niet gerekend'}`;
         }
 
         function renderExtraRegels() {
             const boxMain = document.getElementById('extra-regels-lijst');
             if (!boxMain) return;
             boxMain.innerHTML = extraRegels.map((rg, idx) => {
-                const opts = OPVULLING_POSTEN.map(p =>
-                    `<option value="${p.code}" ${rg.postCode === p.code ? 'selected' : ''}>${p.omschrijving}</option>`
-                ).join('');
-                const calc = berekenExtraRegel(rg);
-                const regelTotaalTekst = calc.bedrag > 0 ? fmtEuro(calc.bedrag) : '€ Niet gerekend';
-
                 return `
                     <div class="extra-row-card">
                         <div class="extra-row-grid">
                             <div>
-                                <label class="field-label">Post (optioneel)</label>
-                                <select onchange="updateExtraRegel(${idx}, 'postCode', this.value, true)">${opts}</select>
+                                <label class="field-label">Post / omschrijving</label>
+                                <input type="text" list="opvulling-suggesties" value="${escapeAttr(rg.omschrijving || '')}" placeholder="" oninput="updateExtraRegel(${idx}, 'omschrijving', this.value)">
                             </div>
                             <div>
-                                <label class="field-label">Prijs per m² (€)</label>
-                                <input type="number" step="any" min="0" inputmode="decimal" value="${escapeAttr(rg.prijsPerM2)}" placeholder="" oninput="updateExtraRegel(${idx}, 'prijsPerM2', this.value, false)">
-                            </div>
-                            <div>
-                                <label class="field-label">Aantal m²</label>
-                                <input type="number" step="any" min="0" inputmode="decimal" value="${escapeAttr(rg.m2)}" placeholder="" oninput="updateExtraRegel(${idx}, 'm2', this.value, false)">
+                                <label class="field-label">Bedrag (€)</label>
+                                <input type="number" step="any" min="0" inputmode="decimal" value="${escapeAttr(rg.bedrag || '')}" placeholder="" oninput="updateExtraRegel(${idx}, 'bedrag', this.value)">
                             </div>
                             <div>
                                 <button type="button" class="btn-secondary" style="padding:8px 12px;" title="Regel wissen" onclick="verwijderExtraRegel(${idx})">×</button>
                             </div>
                         </div>
-                        <div class="extra-row-total" id="opvulling-regel-totaal-${idx}">Totaal regel: ${regelTotaalTekst}</div>
                         <div class="extra-row-note">
-                            <label class="field-label">Opmerking (optioneel, gaat naar Overzicht)</label>
-                            <input type="text" value="${escapeAttr(rg.opmerking || '')}" placeholder="" oninput="updateExtraRegel(${idx}, 'opmerking', this.value, false)">
+                            <label class="field-label">Opmerking (gaat naar Overzicht)</label>
+                            <input type="text" value="${escapeAttr(rg.opmerking || '')}" placeholder="" oninput="updateExtraRegel(${idx}, 'opmerking', this.value)">
                         </div>
                     </div>
                 `;
@@ -1823,7 +1789,6 @@
             const ref = document.getElementById('project-ref').value.trim();
             const planning = document.getElementById('planning-keuze').value;
             const prijsRaw = document.getElementById('prijs-posten').value;
-            const offertePrijsInput = document.getElementById('offerte-prijs');
             const overigeDetails = document.getElementById('overige-details').value.trim();
 
             if (ref) {
@@ -1847,67 +1812,38 @@
             }
 
             let opvullingTotaal = 0;
-            if (extraRegels.length > 0) {
-                const extraItems = [];
-                extraRegels.forEach((rg, idx) => {
-                    const calc = berekenExtraRegel(rg);
-                    updateRegelTotaalLabel(idx);
-                    const opm = (rg.opmerking || '').trim();
+            const opvullingItems = [];
+            extraRegels.forEach(rg => {
+                const omschr = (rg.omschrijving || '').trim();
+                const bedragNum = numVal(rg.bedrag);
+                const opm = (rg.opmerking || '').trim();
 
-                    if (calc.m2 > 0) {
-                        const m2Label = `${calc.m2.toLocaleString('nl-NL', { maximumFractionDigits: 2 })} m²`;
-                        const prijsLabel = calc.prijsPerM2 > 0 ? ` à ${fmtEuro(calc.prijsPerM2)}/m²` : '';
-                        const omschrijving = `${calc.post.omschrijving} (${m2Label}${prijsLabel})`;
-                        const bedragTekst = calc.bedrag > 0 ? fmtEuro(calc.bedrag) : '€ Niet gerekend';
-
-                        if (calc.bedrag > 0) {
-                            opvullingTotaal += calc.bedrag;
-                        }
-
-                        werkzaamheden.push(`${omschrijving}.`);
-                        extraItems.push(`${omschrijving}.`);
-                        prijsPosten.push({ omschrijving, bedrag: bedragTekst });
-                        cnt['sec-planning']++;
+                if (omschr || bedragNum > 0) {
+                    const label = omschr || 'Opvulling';
+                    const bedragTekst = bedragNum > 0 ? fmtEuro(bedragNum) : '€ Niet gerekend';
+                    if (bedragNum > 0) {
+                        opvullingTotaal += bedragNum;
                     }
-                    if (opm && !uitgangspunten.includes(opm)) {
-                        uitgangspunten.push(opm);
-                        cnt['sec-planning']++;
-                    }
-                });
-                if (extraItems.length > 0) {
-                    werkGroepen.push({ titel: 'Opvulling', items: extraItems });
+                    werkzaamheden.push(`${label}.`);
+                    opvullingItems.push(`${label}.`);
+                    prijsPosten.push({ omschrijving: label, bedrag: bedragTekst });
+                    cnt['sec-planning']++;
                 }
+
+                if (opm && !uitgangspunten.includes(opm)) {
+                    uitgangspunten.push(opm);
+                    cnt['sec-planning']++;
+                }
+            });
+
+            if (opvullingItems.length > 0) {
+                werkGroepen.push({ titel: 'Opvulling', items: opvullingItems });
             }
 
+            const offertePrijs = opvullingTotaal > 0 ? fmtEuro(opvullingTotaal) : '';
             const totaalWaardeEl = document.getElementById('opvulling-totaal-waarde');
             if (totaalWaardeEl) {
                 totaalWaardeEl.textContent = fmtEuro(opvullingTotaal);
-            }
-
-            // Zorg dat de offerteprijs automatisch minimaal gelijk is aan het totaal van Opvulling
-            const handmatigNum = numVal(handmatigeOffertePrijs);
-            let effectievePrijsNum = handmatigNum;
-            let offertePrijs = handmatigeOffertePrijs.trim();
-
-            if (opvullingTotaal > 0) {
-                if (!offertePrijs || handmatigNum < opvullingTotaal) {
-                    effectievePrijsNum = opvullingTotaal;
-                    offertePrijs = fmtEuro(opvullingTotaal);
-                    if (offertePrijsInput && document.activeElement !== offertePrijsInput) {
-                        offertePrijsInput.value = offertePrijs;
-                    }
-                }
-            }
-
-            const hintEl = document.getElementById('offerte-prijs-hint');
-            if (hintEl) {
-                hintEl.textContent = opvullingTotaal > 0
-                    ? `Automatisch minimaal ${fmtEuro(opvullingTotaal)} (totaal van Opvulling).`
-                    : 'Wordt automatisch afgestemd op het totaal van Opvulling.';
-            }
-
-            if (offertePrijs || effectievePrijsNum > 0) {
-                cnt['sec-planning']++;
             }
 
             if (overigeDetails) {
@@ -1924,6 +1860,7 @@
                 prijsPosten,
                 offertePrijs,
                 opvullingTotaal,
+                projectRef: ref,
                 overigeTekst: overigeDetails,
                 perSectie: cnt
             };
@@ -1932,7 +1869,7 @@
         }
 
         function updateTellersEnOverzicht() {
-            const { werkzaamheden, behandeling, materieel, uitgangspunten, prijsPosten, offertePrijs, perSectie } = koppelingen;
+            const { werkzaamheden, behandeling, materieel, uitgangspunten, prijsPosten, offertePrijs, projectRef, perSectie } = koppelingen;
             const alleWerk = [...werkzaamheden, ...behandeling];
             const gekoppeldeItemsZonderPrijs = alleWerk.length + materieel.length + uitgangspunten.length + prijsPosten.length;
             const totaal = gekoppeldeItemsZonderPrijs + (offertePrijs ? 1 : 0);
@@ -1943,23 +1880,24 @@
                 const meta = document.getElementById('meta-' + secId);
                 if (sub) sub.textContent = `${n} gekoppeld`;
                 if (meta) meta.textContent = secId === 'sec-planning'
-                    ? `${n} gekoppeld · automatisch ≥ opvulling`
+                    ? `${n} gekoppeld · projectnummer en opvulling vereist`
                     : `${n} gekoppeld`;
             });
 
             const koppSub = document.getElementById('cnt-sec-koppelingen');
             if (koppSub) {
-                koppSub.textContent = offertePrijs
-                    ? `${totaal} gekoppeld · prijs gekoppeld`
-                    : `${totaal} gekoppeld · prijs vereist`;
+                koppSub.textContent = (offertePrijs && projectRef)
+                    ? `${totaal} gekoppeld · klaar voor export`
+                    : `${totaal} gekoppeld · vereisten open`;
             }
 
-            const prijsVeld = document.getElementById('offerte-prijs');
-            if (prijsVeld) {
-                prijsVeld.classList.toggle('input-missing', gekoppeldeItemsZonderPrijs > 0 && !offertePrijs);
+            const refVeld = document.getElementById('project-ref');
+            if (refVeld) {
+                refVeld.classList.toggle('input-missing', gekoppeldeItemsZonderPrijs > 0 && !projectRef);
             }
 
-            document.getElementById('btn-export-docx').disabled = (gekoppeldeItemsZonderPrijs === 0 || !offertePrijs);
+            const exportKlaar = Boolean(projectRef && offertePrijs && gekoppeldeItemsZonderPrijs > 0);
+            document.getElementById('btn-export-docx').disabled = !exportKlaar;
 
             const leegBox = document.getElementById('koppelingen-leeg');
             const gevuldBox = document.getElementById('koppelingen-gevuld');
@@ -1968,19 +1906,19 @@
             if (totaal === 0) {
                 leegBox.classList.remove('hidden');
                 gevuldBox.classList.add('hidden');
-                submeta.textContent = '0 gekoppeld · offerte prijs vereist';
+                submeta.textContent = '0 gekoppeld · projectnummer en offerte prijs vereist';
                 return;
             }
 
             leegBox.classList.add('hidden');
             gevuldBox.classList.remove('hidden');
-            submeta.textContent = offertePrijs
-                ? `${totaal} gekoppeld · Offerte prijs gekoppeld aan ${gekoppeldeItemsZonderPrijs} onderdeel/onderdelen`
-                : `${totaal} gekoppeld · Offerte prijs nog invullen om te koppelen`;
+            submeta.textContent = exportKlaar
+                ? `${totaal} gekoppeld · Offerte prijs ${offertePrijs} · Project ${projectRef}`
+                : `${totaal} gekoppeld · Vul projectnummer en opvullingbedrag in om te downloaden`;
 
             vulUl('grp-werk', 'list-werk', alleWerk);
             vulUl('grp-steiger', 'list-steiger', materieel);
-            vulPrijsPreview('grp-prijs', 'list-prijs', 'list-offerte-prijs', 'offerte-prijs-ontbreekt', prijsPosten, offertePrijs, gekoppeldeItemsZonderPrijs);
+            vulPrijsPreview('grp-prijs', 'list-prijs', 'list-offerte-prijs', 'offerte-prijs-ontbreekt', prijsPosten, offertePrijs, projectRef, gekoppeldeItemsZonderPrijs);
             vulUl('grp-aandacht', 'list-aandacht', uitgangspunten);
         }
 
@@ -1991,7 +1929,7 @@
             ul.innerHTML = items.map(item => `<li>${item}</li>`).join('');
         }
 
-        function vulPrijsPreview(grpId, boxId, totaalId, warnId, posten, offertePrijs, aantalGekoppeld) {
+        function vulPrijsPreview(grpId, boxId, totaalId, warnId, posten, offertePrijs, projectRef, aantalGekoppeld) {
             const grp = document.getElementById(grpId);
             const box = document.getElementById(boxId);
             const totaalBox = document.getElementById(totaalId);
@@ -2004,14 +1942,24 @@
 
             if (offertePrijs) {
                 totaalBox.classList.remove('hidden');
-                totaalBox.innerHTML = `<span>Offerte prijs (gekoppeld aan ${aantalGekoppeld} items)</span><span>${offertePrijs}</span>`;
-                warnBox.classList.add('hidden');
+                totaalBox.innerHTML = `<span>Offerte prijs (totaal opvulling)</span><span>${offertePrijs}</span>`;
             } else {
                 totaalBox.classList.add('hidden');
                 totaalBox.innerHTML = '';
-                warnBox.classList.toggle('hidden', aantalGekoppeld === 0);
-                const cntSpan = document.getElementById('warn-item-count');
-                if (cntSpan) cntSpan.textContent = String(aantalGekoppeld);
+            }
+
+            const ontbreekt = [];
+            if (!projectRef) ontbreekt.push('Project / Referentienummer');
+            if (!offertePrijs) ontbreekt.push('een bedrag bij Opvulling');
+
+            if (ontbreekt.length > 0 && aantalGekoppeld > 0) {
+                warnBox.classList.remove('hidden');
+                const warnTekst = document.getElementById('warn-tekst');
+                if (warnTekst) {
+                    warnTekst.innerHTML = `<strong>Let op:</strong> Vul nog <strong>${ontbreekt.join(' en ')}</strong> in om te downloaden.`;
+                }
+            } else {
+                warnBox.classList.add('hidden');
             }
         }
 
@@ -2032,6 +1980,7 @@
             const projectNaam = document.getElementById('projectnaam-veld').value.trim();
             const onderwerpOmschrijving = document.getElementById('onderwerp-project').value.trim();
             const behandeldDoor = document.getElementById('behandeld-door').value.trim();
+            const projectNummer = document.getElementById('project-ref').value.trim();
 
             const autoDisciplines = [];
             if (document.getElementById('d-buiten')?.checked) autoDisciplines.push('Buitenschilderwerk');
@@ -2054,24 +2003,31 @@
                 ? `Geachte heer/mevrouw ${achternaam},`
                 : 'Geachte heer/mevrouw,';
 
+            const naamDeel = sanitizeBestandsnaamDeel(projectNaam, 'Offerte');
+            const nummerDeel = sanitizeBestandsnaamDeel(projectNummer, '000');
+            const bestandsnaam = `word_${naamDeel}_${nummerDeel}.docx`;
+
             return {
                 plaatsDatum,
                 klantNaam,
                 klantContact,
                 klantAdres,
                 klantPlaats,
+                projectNaam,
+                projectNummer,
                 onderwerp,
                 behandeldDoor,
-                aanhef
+                aanhef,
+                bestandsnaam
             };
         }
 
         async function exporteerWord() {
-            const { werkzaamheden, werkGroepen, behandeling, materieel, uitgangspunten, prijsPosten, offertePrijs, overigeTekst } = koppelingen;
+            const { werkzaamheden, werkGroepen, behandeling, materieel, uitgangspunten, prijsPosten, offertePrijs, projectRef, overigeTekst } = koppelingen;
             const gekoppeldeItemsZonderPrijs = werkzaamheden.length + behandeling.length + materieel.length + uitgangspunten.length + prijsPosten.length;
 
-            if (!offertePrijs) {
-                gaNaarOffertePrijs();
+            if (!projectRef || !offertePrijs) {
+                gaNaarOntbrekend();
                 return;
             }
             if (gekoppeldeItemsZonderPrijs === 0) return;
@@ -2084,6 +2040,8 @@
                 klantContact: basis.klantContact,
                 klantAdres: basis.klantAdres,
                 klantPlaats: basis.klantPlaats,
+                projectNaam: basis.projectNaam,
+                projectNummer: basis.projectNummer,
                 plaatsDatum: basis.plaatsDatum,
                 onderwerp: basis.onderwerp,
                 behandeldDoor: basis.behandeldDoor,
@@ -2119,7 +2077,7 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'Offerte-PlenderWestendorp.docx';
+                a.download = basis.bestandsnaam;
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
@@ -2131,12 +2089,12 @@
                     btn.disabled = false;
                     btn.textContent = 'Download Word (.docx)';
                 }
+                verwerkAlles();
             }
         }
 
         function opnieuwBeginnen() {
             document.getElementById('offerte-form').reset();
-            handmatigeOffertePrijs = '';
             extraRegels = maakStandaardExtraRegels();
             renderExtraRegels();
             verwerkAlles();
