@@ -514,7 +514,7 @@
             <h1 class="doc-title">Offerte Vragenlijst<br>Totaalonderhoud &amp; Opname</h1>
             <div class="brand-mark">
                 <img src="./PlenderWestendorp_app-icoon_512.png" alt="PlenderWestendorp logo" class="brand-logo">
-                <span>PlenderWestendorp · v2.6</span>
+                <span>PlenderWestendorp · v2.7</span>
             </div>
         </header>
 
@@ -566,7 +566,7 @@
                             <div class="question-block">
                                 <div class="form-grid-2">
                                     <div>
-                                        <label class="field-label" for="klant-naam">Naam bedrijf / opdrachtgever</label>
+                                        <label class="field-label" for="klant-naam">Naam bedrijf / opdrachtgever (ontvanger)</label>
                                         <input type="text" id="klant-naam" oninput="verwerkAlles()" placeholder="">
                                     </div>
                                     <div>
@@ -590,8 +590,12 @@
                                         <input type="text" id="onderwerp-project" oninput="verwerkAlles()" placeholder="">
                                     </div>
                                     <div>
-                                        <label class="field-label" for="behandeld-door">Behandeld door (optioneel)</label>
-                                        <input type="text" id="behandeld-door" oninput="verwerkAlles()" placeholder="">
+                                        <label class="field-label" for="behandeld-door">Behandeld door (verzender)</label>
+                                        <input type="text" id="behandeld-door" list="behandelaars-lijst" oninput="verwerkAlles()" placeholder="">
+                                        <datalist id="behandelaars-lijst">
+                                            <option value="Thijs de Moor">
+                                            <option value="Nick Zoetebier">
+                                        </datalist>
                                     </div>
                                     <div>
                                         <label class="field-label" for="offerte-plaats-datum">Plaats, datum (optioneel, standaard Kampen + vandaag)</label>
@@ -1948,11 +1952,20 @@
             const onderwerpOmschrijving = document.getElementById('onderwerp-project').value.trim();
             const behandeldDoor = document.getElementById('behandeld-door').value.trim();
 
+            const autoDisciplines = [];
+            if (document.getElementById('d-buiten')?.checked) autoDisciplines.push('Buitenschilderwerk');
+            if (document.getElementById('d-binnen')?.checked) autoDisciplines.push('Binnenschilderwerk');
+            if (document.getElementById('d-glas')?.checked) autoDisciplines.push('Glaszetten');
+            if (document.getElementById('d-timmer')?.checked) autoDisciplines.push('Timmerwerk & houtrot');
+            if (document.getElementById('d-gevel')?.checked) autoDisciplines.push('Gevelonderhoud & isolatie');
+
+            const omschrijvingDefinitief = onderwerpOmschrijving || autoDisciplines.join(', ');
+
             let onderwerp = '';
-            if (projectNaam && onderwerpOmschrijving) {
-                onderwerp = `${projectNaam} – ${onderwerpOmschrijving}`;
+            if (projectNaam && omschrijvingDefinitief) {
+                onderwerp = `${projectNaam} – ${omschrijvingDefinitief}`;
             } else {
-                onderwerp = projectNaam || onderwerpOmschrijving;
+                onderwerp = projectNaam || omschrijvingDefinitief;
             }
 
             const achternaam = haalAchternaamOp(klantContact);
