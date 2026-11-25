@@ -327,13 +327,6 @@
             opacity: 0.9;
         }
 
-        .btn-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 8px;
-        }
-
         .extra-row-card {
             padding: 14px 16px;
             margin-top: 12px;
@@ -553,7 +546,7 @@
             <h1 class="doc-title">Offerte Vragenlijst<br>Totaalonderhoud &amp; Opname</h1>
             <div class="brand-mark">
                 <img src="./PlenderWestendorp_app-icoon_512.png" alt="PlenderWestendorp logo" class="brand-logo">
-                <span>PlenderWestendorp · v3.2</span>
+                <span>PlenderWestendorp · v3.3</span>
             </div>
         </header>
 
@@ -1152,12 +1145,6 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="question-block">
-                                <label class="field-label" for="prijs-posten">Prijsregels / onderdelen op de offerte (standaard € Niet gerekend)</label>
-                                <span class="field-hint">Zet elke regel op een nieuwe regel (bijv. "Binnen schilderwerk 2 lokalen"). Op de offerte komt automatisch € Niet gerekend te staan.</span>
-                                <textarea id="prijs-posten" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
                             </div>
 
                             <!-- 1 SAMENGEVOEGD ONDERDEEL: EIGEN INVULLEN + POSTEN & M² BEREKENING -->
@@ -1886,7 +1873,6 @@
             // 4. PLANNING, PRIJS, SAMENGEVOEGD INVULLEN & OVERIGE DETAILS
             const ref = document.getElementById('project-ref').value.trim();
             const planning = document.getElementById('planning-keuze').value;
-            const prijsRaw = document.getElementById('prijs-posten').value;
             const overigeDetails = document.getElementById('overige-details').value.trim();
 
             if (ref) {
@@ -1896,17 +1882,6 @@
             if (planning) {
                 uitgangspunten.push(`${planning}.`);
                 cnt['sec-planning']++;
-            }
-
-            const regels = prijsRaw
-                .split('\n')
-                .map(r => r.trim())
-                .filter(Boolean);
-            if (regels.length > 0) {
-                regels.forEach(omschrijving => {
-                    prijsPosten.push({ omschrijving, bedrag: '€ Niet gerekend' });
-                    cnt['sec-planning']++;
-                });
             }
 
             let totaalPrijs = 0;
