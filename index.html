@@ -518,7 +518,7 @@
             <h1 class="doc-title">Offerte Vragenlijst<br>Totaalonderhoud &amp; Opname</h1>
             <div class="brand-mark">
                 <img src="./PlenderWestendorp_app-icoon_512.png" alt="PlenderWestendorp logo" class="brand-logo">
-                <span>PlenderWestendorp · v2.4</span>
+                <span>PlenderWestendorp · v2.3</span>
             </div>
         </header>
 
@@ -1397,6 +1397,7 @@
                 'sec-planning': 0
             };
 
+            // 1. OPDRACHT & PAND
             const opdrachtgever = document.getElementById('opdrachtgever').value;
             const pandtype = document.getElementById('pandtype').value;
             const overigeBasis = document.getElementById('overige-basis').value.trim();
@@ -1434,6 +1435,7 @@
                 cnt['sec-basis']++;
             }
 
+            // 2. HOOGTE, STEIGER & BOUWLAGEN
             const hoogte = document.getElementById('werkhoogte').value;
             const steigerVraagZichtbaar = (hoogte === 'verd1' || hoogte === 'verd2plus' || hoogte === 'moeilijk');
             toggle('koppel-steiger', steigerVraagZichtbaar);
@@ -1501,6 +1503,7 @@
                 cnt['sec-hoogte']++;
             }
 
+            // 3. WERKZAAMHEDEN & BEHANDELING
             toggle('koppel-buiten', dBuiten);
             toggle('koppel-binnen', dBinnen);
             toggle('koppel-glas', dGlas);
@@ -1742,10 +1745,12 @@
                 }
             }
 
+            // 4. PLANNING, PRIJS & OVERIGE DETAILS
             const ref = document.getElementById('project-ref').value.trim();
             const planning = document.getElementById('planning-keuze').value;
             const prijsRaw = document.getElementById('prijs-posten').value;
-            const offertePrijs = document.getElementById('offerte-prijs').value.trim();
+            const offertePrijsInput = document.getElementById('offerte-prijs');
+            const offertePrijs = offertePrijsInput.value.trim();
             const overigeDetails = document.getElementById('overige-details').value.trim();
 
             if (ref) {
@@ -1777,6 +1782,7 @@
                 cnt['sec-planning']++;
             }
 
+            // OPTIONALE M²-REGELS (ALLEEN WANNEER AANGEVINKT; OPMERKING NAAR OVERZICHT)
             const extraActief = document.getElementById('chk-extra-calculatie').checked;
             toggle('extra-calculatie-box', extraActief);
 
@@ -1835,11 +1841,13 @@
                     : `${totaal} gekoppeld · prijs vereist`;
             }
 
+            // Markeer offerte-prijs veld als items zijn gekozen maar de prijs nog ontbreekt
             const prijsVeld = document.getElementById('offerte-prijs');
             if (prijsVeld) {
                 prijsVeld.classList.toggle('input-missing', gekoppeldeItemsZonderPrijs > 0 && !offertePrijs);
             }
 
+            // Exportknop vereist gekoppelde onderdelen én een ingevulde Offerte prijs
             document.getElementById('btn-export-docx').disabled = (gekoppeldeItemsZonderPrijs === 0 || !offertePrijs);
 
             const leegBox = document.getElementById('koppelingen-leeg');
