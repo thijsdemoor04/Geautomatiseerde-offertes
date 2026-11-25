@@ -518,7 +518,7 @@
             <h1 class="doc-title">Offerte Vragenlijst<br>Totaalonderhoud &amp; Opname</h1>
             <div class="brand-mark">
                 <img src="./PlenderWestendorp_app-icoon_512.png" alt="PlenderWestendorp logo" class="brand-logo">
-                <span>PlenderWestendorp · v2.3</span>
+                <span>PlenderWestendorp · v2.4</span>
             </div>
         </header>
 
@@ -1117,8 +1117,8 @@
                             </div>
 
                             <div class="question-block">
-                                <label class="field-label" for="prijs-posten">Prijsregels / onderdelen op de offerte (optioneel, standaard €Niet gerekend)</label>
-                                <span class="field-hint">Zet elke regel op een nieuwe regel (bijv. "Binnen schilderwerk 2 lokalen"). Op de offerte komt automatisch €Niet gerekend te staan.</span>
+                                <label class="field-label" for="prijs-posten">Prijsregels / onderdelen op de offerte (optioneel, standaard € Niet gerekend)</label>
+                                <span class="field-hint">Zet elke regel op een nieuwe regel (bijv. "Binnen schilderwerk 2 lokalen"). Op de offerte komt automatisch € Niet gerekend te staan.</span>
                                 <textarea id="prijs-posten" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
                             </div>
 
@@ -1225,6 +1225,7 @@
 
         let koppelingen = {
             werkzaamheden: [],
+            werkGroepen: [],
             behandeling: [],
             materieel: [],
             uitgangspunten: [],
@@ -1386,6 +1387,7 @@
 
         function verwerkAlles() {
             const werkzaamheden = [];
+            const werkGroepen = [];
             const behandeling = [];
             const materieel = [];
             const uitgangspunten = [];
@@ -1442,7 +1444,9 @@
 
             const lagen = getChecked('bouwlaag');
             if (lagen.length > 0) {
-                werkzaamheden.push(`Diverse werkzaamheden ${formatBouwlagen(lagen)}.`);
+                const regel = `Diverse werkzaamheden ${formatBouwlagen(lagen)}.`;
+                werkzaamheden.push(regel);
+                werkGroepen.push({ titel: '', items: [regel] });
                 cnt['sec-hoogte']++;
             }
 
@@ -1512,15 +1516,20 @@
 
             if (dBuiten) {
                 const delen = getChecked('buiten_deel');
+                const groepItems = [];
                 if (delen.length > 0) {
                     delen.forEach(d => {
-                        werkzaamheden.push(`Buitenschilderwerk ${d}.`);
+                        const txt = `Buitenschilderwerk ${d}.`;
+                        werkzaamheden.push(txt);
+                        groepItems.push(txt);
                         cnt['sec-werk']++;
                     });
                 } else {
                     werkzaamheden.push('Buitenschilderwerk.');
+                    groepItems.push('Buitenschilderwerk.');
                     cnt['sec-werk']++;
                 }
+                werkGroepen.push({ titel: 'Buitenschilderwerk', items: groepItems });
 
                 const cond = document.getElementById('buiten-conditie').value;
                 if (cond === 'goed') {
@@ -1559,15 +1568,20 @@
 
             if (dBinnen) {
                 const delen = getChecked('binnen_deel');
+                const groepItems = [];
                 if (delen.length > 0) {
                     delen.forEach(d => {
-                        werkzaamheden.push(`Binnen schilderwerk ${d}.`);
+                        const txt = `Binnen schilderwerk ${d}.`;
+                        werkzaamheden.push(txt);
+                        groepItems.push(txt);
                         cnt['sec-werk']++;
                     });
                 } else {
                     werkzaamheden.push('Binnen schilderwerk.');
+                    groepItems.push('Binnen schilderwerk.');
                     cnt['sec-werk']++;
                 }
+                werkGroepen.push({ titel: 'Binnenschilderwerk & behang / scanwerk', items: groepItems });
 
                 const beh = document.getElementById('binnen-behandeling').value;
                 const kleurSel = document.getElementById('binnen-kleur').value;
@@ -1621,11 +1635,13 @@
                 const soorten = getChecked('glas_soort');
                 const aantal = document.getElementById('glas-aantal').value;
                 const aantalLabel = aantal ? ` (${aantal} ruiten)` : '';
-                if (soorten.length > 0) {
-                    werkzaamheden.push(`Glaszetten${aantalLabel}: leveren en plaatsen van ${soorten.join(', ')}.`);
-                } else {
-                    werkzaamheden.push(`Glaszetten${aantalLabel}.`);
-                }
+                const groepItems = [];
+                const hoofdRegel = soorten.length > 0
+                    ? `Glaszetten${aantalLabel}: leveren en plaatsen van ${soorten.join(', ')}.`
+                    : `Glaszetten${aantalLabel}.`;
+
+                werkzaamheden.push(hoofdRegel);
+                groepItems.push(hoofdRegel);
                 cnt['sec-werk']++;
 
                 const zijde = document.getElementById('glas-zijde').value;
@@ -1649,9 +1665,12 @@
                     cnt['sec-werk']++;
                 }
                 if (document.getElementById('glas-roosters').checked) {
-                    werkzaamheden.push('Ventilatieroosters leveren, op maat afstemmen en monteren.');
+                    const rTxt = 'Ventilatieroosters leveren, op maat afstemmen en monteren.';
+                    werkzaamheden.push(rTxt);
+                    groepItems.push(rTxt);
                     cnt['sec-werk']++;
                 }
+                werkGroepen.push({ titel: 'Glaszetten', items: groepItems });
 
                 const latten = document.getElementById('glas-latten').checked;
                 toggle('sub-glas-latten', latten);
@@ -1681,15 +1700,20 @@
 
             if (dTimmer) {
                 const delen = getChecked('timmer_deel');
+                const groepItems = [];
                 if (delen.length > 0) {
                     delen.forEach(d => {
-                        werkzaamheden.push(`${d}.`);
+                        const txt = `${d}.`;
+                        werkzaamheden.push(txt);
+                        groepItems.push(txt);
                         cnt['sec-werk']++;
                     });
                 } else {
                     werkzaamheden.push('Timmerwerk, houtrot en afbouw.');
+                    groepItems.push('Timmerwerk, houtrot en afbouw.');
                     cnt['sec-werk']++;
                 }
+                werkGroepen.push({ titel: 'Timmerwerk, houtrot & afbouw', items: groepItems });
 
                 const hRot = document.getElementById('timmer-houtrot').checked;
                 toggle('sub-timmer-houtrot', hRot);
@@ -1720,19 +1744,27 @@
 
             if (dGevel) {
                 const delen = getChecked('gevel_deel');
+                const groepItems = [];
                 if (delen.length > 0) {
                     delen.forEach(d => {
-                        werkzaamheden.push(`${d}.`);
+                        const txt = `${d}.`;
+                        werkzaamheden.push(txt);
+                        groepItems.push(txt);
                         cnt['sec-werk']++;
                     });
                 } else {
                     werkzaamheden.push('Gevelonderhoud, isolatie en verduurzaming.');
+                    groepItems.push('Gevelonderhoud, isolatie en verduurzaming.');
                     cnt['sec-werk']++;
                 }
                 if (document.getElementById('gevel-vdk').checked) {
-                    werkzaamheden.push('Ventilatie-, WTW- (o.a. Climarad) of elektrotechnische werkzaamheden in afstemming met de VDK Groep.');
+                    const vdkTxt = 'Ventilatie-, WTW- (o.a. Climarad) of elektrotechnische werkzaamheden in afstemming met de VDK Groep.';
+                    werkzaamheden.push(vdkTxt);
+                    groepItems.push(vdkTxt);
                     cnt['sec-werk']++;
                 }
+                werkGroepen.push({ titel: 'Gevelonderhoud, isolatie & verduurzaming', items: groepItems });
+
                 if (document.getElementById('gevel-asbest').checked) {
                     uitgangspunten.push('Bij asbestverdacht plaatmateriaal vooraf inventarisatie en eventuele sanering door een gecertificeerd bedrijf afstemmen.');
                     cnt['sec-werk']++;
@@ -1768,7 +1800,7 @@
                 .filter(Boolean);
             if (regels.length > 0) {
                 regels.forEach(omschrijving => {
-                    prijsPosten.push({ omschrijving, bedrag: '€Niet gerekend' });
+                    prijsPosten.push({ omschrijving, bedrag: '€ Niet gerekend' });
                     cnt['sec-planning']++;
                 });
             }
@@ -1782,19 +1814,21 @@
                 cnt['sec-planning']++;
             }
 
-            // OPTIONALE M²-REGELS (ALLEEN WANNEER AANGEVINKT; OPMERKING NAAR OVERZICHT)
+            // OPTIONALE M²-REGELS
             const extraActief = document.getElementById('chk-extra-calculatie').checked;
             toggle('extra-calculatie-box', extraActief);
 
             if (extraActief && extraRegels.length > 0) {
+                const extraItems = [];
                 extraRegels.forEach(rg => {
                     const calc = berekenExtraRegel(rg);
                     const m2Label = calc.m2 > 0 ? `${calc.m2.toFixed(2).replace('.', ',')} m²` : 'm²';
                     const omschrijving = `${calc.post.omschrijving} (${m2Label})`;
-                    const bedragTekst = calc.bedrag > 0 ? fmtEuro(calc.bedrag) : '€Niet gerekend';
+                    const bedragTekst = calc.bedrag > 0 ? fmtEuro(calc.bedrag) : '€ Niet gerekend';
 
                     if (calc.m2 > 0 || rg.opmerking) {
                         werkzaamheden.push(`${omschrijving}.`);
+                        extraItems.push(`${omschrijving}.`);
                         prijsPosten.push({ omschrijving, bedrag: bedragTekst });
                     }
                     const opm = (rg.opmerking || '').trim();
@@ -1802,10 +1836,14 @@
                         uitgangspunten.push(opm);
                     }
                 });
+                if (extraItems.length > 0) {
+                    werkGroepen.push({ titel: 'Aanvullende calculatieposten', items: extraItems });
+                }
             }
 
             koppelingen = {
                 werkzaamheden,
+                werkGroepen,
                 behandeling,
                 materieel,
                 uitgangspunten,
@@ -1841,13 +1879,11 @@
                     : `${totaal} gekoppeld · prijs vereist`;
             }
 
-            // Markeer offerte-prijs veld als items zijn gekozen maar de prijs nog ontbreekt
             const prijsVeld = document.getElementById('offerte-prijs');
             if (prijsVeld) {
                 prijsVeld.classList.toggle('input-missing', gekoppeldeItemsZonderPrijs > 0 && !offertePrijs);
             }
 
-            // Exportknop vereist gekoppelde onderdelen én een ingevulde Offerte prijs
             document.getElementById('btn-export-docx').disabled = (gekoppeldeItemsZonderPrijs === 0 || !offertePrijs);
 
             const leegBox = document.getElementById('koppelingen-leeg');
@@ -1947,7 +1983,7 @@
         }
 
         async function exporteerWord() {
-            const { werkzaamheden, behandeling, materieel, uitgangspunten, prijsPosten, offertePrijs, overigeTekst } = koppelingen;
+            const { werkzaamheden, werkGroepen, behandeling, materieel, uitgangspunten, prijsPosten, offertePrijs, overigeTekst } = koppelingen;
             const gekoppeldeItemsZonderPrijs = werkzaamheden.length + behandeling.length + materieel.length + uitgangspunten.length + prijsPosten.length;
 
             if (!offertePrijs) {
@@ -1969,6 +2005,7 @@
                 behandeldDoor: basis.behandeldDoor,
                 aanhef: basis.aanhef,
                 werkzaamheden,
+                werkGroepen,
                 behandeling,
                 materieel,
                 uitgangspunten,
