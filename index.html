@@ -23,6 +23,8 @@
             --line-subtle: #c8c6c1;
             --accent-bg: #161616;
             --accent-fg: #f5f4f1;
+            --warn-bg: #fbf2d6;
+            --warn-border: #c59b27;
             --font-serif: Georgia, "Times New Roman", Times, serif;
             --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
@@ -220,6 +222,11 @@
             margin-bottom: 6px;
         }
 
+        .req-mark {
+            color: #9e2a2b;
+            font-weight: 700;
+        }
+
         .field-hint {
             display: block;
             font-size: 12px;
@@ -247,6 +254,11 @@
         textarea:focus {
             background-color: #ffffff;
             box-shadow: inset 0 0 0 1px var(--line-strong);
+        }
+
+        input.input-missing {
+            border-color: #9e2a2b;
+            background-color: #fdf8f8;
         }
 
         .form-grid-2 {
@@ -391,12 +403,27 @@
         .offerte-prijs-totaal-preview {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             gap: 16px;
             margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid var(--line-strong);
+            padding: 9px 12px;
+            border: 1px solid var(--line-strong);
+            background-color: rgba(255, 255, 255, 0.55);
             font-size: 14px;
             font-weight: 700;
+        }
+
+        .offerte-prijs-warning {
+            margin-top: 8px;
+            padding: 9px 12px;
+            background-color: var(--warn-bg);
+            border: 1px solid var(--warn-border);
+            font-size: 12.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .bottom-bar {
@@ -491,7 +518,7 @@
             <h1 class="doc-title">Offerte Vragenlijst<br>Totaalonderhoud &amp; Opname</h1>
             <div class="brand-mark">
                 <img src="./PlenderWestendorp_app-icoon_512.png" alt="PlenderWestendorp logo" class="brand-logo">
-                <span>PlenderWestendorp · v2.2</span>
+                <span>PlenderWestendorp · v2.3</span>
             </div>
         </header>
 
@@ -519,7 +546,7 @@
                         <span class="nav-item-sub" id="cnt-sec-werk">0 gekoppeld</span>
                     </button>
                     <button type="button" class="nav-item" data-sec="sec-planning" onclick="selectSectie('sec-planning')">
-                        <span class="nav-item-title">4. Planning &amp; Overige details</span>
+                        <span class="nav-item-title">4. Planning &amp; Offerte prijs</span>
                         <span class="nav-item-sub" id="cnt-sec-planning">0 gekoppeld</span>
                     </button>
                     <button type="button" class="nav-item" data-sec="sec-koppelingen" onclick="selectSectie('sec-koppelingen')">
@@ -1064,10 +1091,10 @@
                             </div>
                         </section>
 
-                        <!-- SECTIE 4: PLANNING, PRIJS & OVERIGE DETAILS -->
+                        <!-- SECTIE 4: PLANNING & OFFERTE PRIJS -->
                         <section id="sec-planning" class="pane-section">
-                            <h2 class="pane-heading">4. Planning &amp; Overige details</h2>
-                            <div class="pane-meta" id="meta-sec-planning">0 gekoppeld · start leeg</div>
+                            <h2 class="pane-heading">4. Planning &amp; Offerte prijs</h2>
+                            <div class="pane-meta" id="meta-sec-planning">0 gekoppeld · offerte prijs vereist</div>
 
                             <div class="question-block">
                                 <div class="form-grid-2">
@@ -1096,9 +1123,9 @@
                             </div>
 
                             <div class="question-block">
-                                <label class="field-label" for="offerte-prijs">Offerte prijs (optioneel)</label>
-                                <span class="field-hint">Wordt onderaan de prijsaanbieding in het overzicht en het Word-document getoond.</span>
-                                <input type="text" id="offerte-prijs" oninput="verwerkAlles()" placeholder="">
+                                <label class="field-label" for="offerte-prijs">Offerte prijs <span class="req-mark">*</span></label>
+                                <span class="field-hint">Vereist. Wordt direct gekoppeld aan de geselecteerde onderdelen in het overzicht en het Word-document.</span>
+                                <input type="text" id="offerte-prijs" required oninput="verwerkAlles()" placeholder="">
                             </div>
 
                             <div class="question-block">
@@ -1111,10 +1138,10 @@
                         <!-- SECTIE 5: GEKOPPELDE ITEMS IN HET OVERZICHT -->
                         <section id="sec-koppelingen" class="results-panel">
                             <h2 class="results-heading">5. Gekoppelde items</h2>
-                            <div class="pane-meta" id="koppelingen-submeta">0 gekoppeld · start leeg</div>
+                            <div class="pane-meta" id="koppelingen-submeta">0 gekoppeld · offerte prijs vereist</div>
 
                             <div id="koppelingen-leeg">
-                                <span class="field-hint" style="margin:0;">Nog niets gekoppeld. Zodra je hierboven keuzes of overige details invult, verschijnen hier de gekoppelde onderdelen.</span>
+                                <span class="field-hint" style="margin:0;">Nog niets gekoppeld. Zodra je hierboven keuzes of overige details invult, verschijnen hier de gekoppelde onderdelen en de koppeling met de offerte prijs.</span>
                             </div>
 
                             <div id="koppelingen-gevuld" class="hidden">
@@ -1127,9 +1154,13 @@
                                     <ul class="clean-list" id="list-steiger"></ul>
                                 </div>
                                 <div class="coupling-group" id="grp-prijs">
-                                    <h3 class="coupling-group-title">Prijsaanbieding</h3>
+                                    <h3 class="coupling-group-title">Prijsaanbieding &amp; koppeling offerte prijs</h3>
                                     <div id="list-prijs"></div>
                                     <div id="list-offerte-prijs" class="offerte-prijs-totaal-preview hidden"></div>
+                                    <div id="offerte-prijs-ontbreekt" class="offerte-prijs-warning hidden">
+                                        <span><strong>Let op:</strong> Vul nog een <strong>Offerte prijs</strong> in om deze te koppelen aan de <span id="warn-item-count">0</span> gekoppelde items.</span>
+                                        <button type="button" class="action-link-btn" style="margin-top:0;" onclick="gaNaarOffertePrijs()">Offerte prijs invullen</button>
+                                    </div>
                                 </div>
                                 <div class="coupling-group" id="grp-aandacht">
                                     <h3 class="coupling-group-title">Uitgangspunten, aandachtspunten &amp; overige details</h3>
@@ -1228,6 +1259,15 @@
             }
         }
 
+        function gaNaarOffertePrijs() {
+            switchHoofdTab('overzicht');
+            const veld = document.getElementById('offerte-prijs');
+            if (veld) {
+                veld.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => veld.focus(), 250);
+            }
+        }
+
         function koppelTimmerwerk() {
             const cb = document.getElementById('d-timmer');
             const houtrotCb = document.getElementById('timmer-houtrot');
@@ -1316,7 +1356,6 @@
             const box = document.getElementById('extra-regels-lijst');
             if (!box) return;
             box.innerHTML = extraRegels.map((rg, idx) => {
-                const calc = berekenExtraRegel(rg);
                 const opts = EXTRA_POSTEN.map(p =>
                     `<option value="${p.code}" ${rg.postCode === p.code ? 'selected' : ''}>${p.omschrijving} (m²)</option>`
                 ).join('');
@@ -1710,7 +1749,8 @@
             const ref = document.getElementById('project-ref').value.trim();
             const planning = document.getElementById('planning-keuze').value;
             const prijsRaw = document.getElementById('prijs-posten').value;
-            const offertePrijs = document.getElementById('offerte-prijs').value.trim();
+            const offertePrijsInput = document.getElementById('offerte-prijs');
+            const offertePrijs = offertePrijsInput.value.trim();
             const overigeDetails = document.getElementById('overige-details').value.trim();
 
             if (ref) {
@@ -1781,21 +1821,34 @@
         function updateTellersEnOverzicht() {
             const { werkzaamheden, behandeling, materieel, uitgangspunten, prijsPosten, offertePrijs, perSectie } = koppelingen;
             const alleWerk = [...werkzaamheden, ...behandeling];
-            const prijsCount = prijsPosten.length + (offertePrijs ? 1 : 0);
-            const totaal = alleWerk.length + materieel.length + uitgangspunten.length + prijsCount;
+            const gekoppeldeItemsZonderPrijs = alleWerk.length + materieel.length + uitgangspunten.length + prijsPosten.length;
+            const totaal = gekoppeldeItemsZonderPrijs + (offertePrijs ? 1 : 0);
 
             Object.keys(perSectie).forEach(secId => {
                 const n = perSectie[secId];
                 const sub = document.getElementById('cnt-' + secId);
                 const meta = document.getElementById('meta-' + secId);
                 if (sub) sub.textContent = `${n} gekoppeld`;
-                if (meta) meta.textContent = `${n} gekoppeld`;
+                if (meta) meta.textContent = secId === 'sec-planning'
+                    ? `${n} gekoppeld · offerte prijs vereist`
+                    : `${n} gekoppeld`;
             });
 
             const koppSub = document.getElementById('cnt-sec-koppelingen');
-            if (koppSub) koppSub.textContent = `${totaal} gekoppeld`;
+            if (koppSub) {
+                koppSub.textContent = offertePrijs
+                    ? `${totaal} gekoppeld · prijs gekoppeld`
+                    : `${totaal} gekoppeld · prijs vereist`;
+            }
 
-            document.getElementById('btn-export-docx').disabled = (totaal === 0);
+            // Markeer offerte-prijs veld als items zijn gekozen maar de prijs nog ontbreekt
+            const prijsVeld = document.getElementById('offerte-prijs');
+            if (prijsVeld) {
+                prijsVeld.classList.toggle('input-missing', gekoppeldeItemsZonderPrijs > 0 && !offertePrijs);
+            }
+
+            // Exportknop vereist gekoppelde onderdelen én een ingevulde Offerte prijs
+            document.getElementById('btn-export-docx').disabled = (gekoppeldeItemsZonderPrijs === 0 || !offertePrijs);
 
             const leegBox = document.getElementById('koppelingen-leeg');
             const gevuldBox = document.getElementById('koppelingen-gevuld');
@@ -1804,17 +1857,19 @@
             if (totaal === 0) {
                 leegBox.classList.remove('hidden');
                 gevuldBox.classList.add('hidden');
-                submeta.textContent = '0 gekoppeld · start leeg';
+                submeta.textContent = '0 gekoppeld · offerte prijs vereist';
                 return;
             }
 
             leegBox.classList.add('hidden');
             gevuldBox.classList.remove('hidden');
-            submeta.textContent = `${totaal} gekoppeld (${alleWerk.length} werk/behandeling · ${materieel.length} steiger/materieel · ${prijsCount} prijs · ${uitgangspunten.length} uitgangspunten/details)`;
+            submeta.textContent = offertePrijs
+                ? `${totaal} gekoppeld · Offerte prijs gekoppeld aan ${gekoppeldeItemsZonderPrijs} onderdeel/onderdelen`
+                : `${totaal} gekoppeld · Offerte prijs nog invullen om te koppelen`;
 
             vulUl('grp-werk', 'list-werk', alleWerk);
             vulUl('grp-steiger', 'list-steiger', materieel);
-            vulPrijsPreview('grp-prijs', 'list-prijs', 'list-offerte-prijs', prijsPosten, offertePrijs);
+            vulPrijsPreview('grp-prijs', 'list-prijs', 'list-offerte-prijs', 'offerte-prijs-ontbreekt', prijsPosten, offertePrijs, gekoppeldeItemsZonderPrijs);
             vulUl('grp-aandacht', 'list-aandacht', uitgangspunten);
         }
 
@@ -1825,20 +1880,27 @@
             ul.innerHTML = items.map(item => `<li>${item}</li>`).join('');
         }
 
-        function vulPrijsPreview(grpId, boxId, totaalId, posten, offertePrijs) {
+        function vulPrijsPreview(grpId, boxId, totaalId, warnId, posten, offertePrijs, aantalGekoppeld) {
             const grp = document.getElementById(grpId);
             const box = document.getElementById(boxId);
             const totaalBox = document.getElementById(totaalId);
-            grp.classList.toggle('hidden', posten.length === 0 && !offertePrijs);
+            const warnBox = document.getElementById(warnId);
+
+            grp.classList.toggle('hidden', posten.length === 0 && !offertePrijs && aantalGekoppeld === 0);
             box.innerHTML = posten
                 .map(p => `<div class="prijs-regel-preview"><span>${p.omschrijving}</span><span>${p.bedrag}</span></div>`)
                 .join('');
+
             if (offertePrijs) {
                 totaalBox.classList.remove('hidden');
-                totaalBox.innerHTML = `<span>Offerte prijs</span><span>${offertePrijs}</span>`;
+                totaalBox.innerHTML = `<span>Offerte prijs (gekoppeld aan ${aantalGekoppeld} items)</span><span>${offertePrijs}</span>`;
+                warnBox.classList.add('hidden');
             } else {
                 totaalBox.classList.add('hidden');
                 totaalBox.innerHTML = '';
+                warnBox.classList.toggle('hidden', aantalGekoppeld === 0);
+                const cntSpan = document.getElementById('warn-item-count');
+                if (cntSpan) cntSpan.textContent = String(aantalGekoppeld);
             }
         }
 
@@ -1886,8 +1948,13 @@
 
         async function exporteerWord() {
             const { werkzaamheden, behandeling, materieel, uitgangspunten, prijsPosten, offertePrijs, overigeTekst } = koppelingen;
-            const prijsCount = prijsPosten.length + (offertePrijs ? 1 : 0);
-            if (werkzaamheden.length + behandeling.length + materieel.length + uitgangspunten.length + prijsCount === 0) return;
+            const gekoppeldeItemsZonderPrijs = werkzaamheden.length + behandeling.length + materieel.length + uitgangspunten.length + prijsPosten.length;
+
+            if (!offertePrijs) {
+                gaNaarOffertePrijs();
+                return;
+            }
+            if (gekoppeldeItemsZonderPrijs === 0) return;
 
             const btn = document.getElementById('btn-export-docx');
             const basis = bouwOfferteBasisGegevens();
