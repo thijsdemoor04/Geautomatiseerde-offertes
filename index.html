@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- App-instellingen voor "Zet op beginscherm" -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="theme-color" content="#e9e8e5">
+    <title>Overzicht — PlenderWestendorp</title>
+
+    <style>
+        :root {
+            --bg-page: #e9e8e5;
+            --bg-surface: #efeeeb;
+            --ink-main: #161616;
+            --ink-muted: #555552;
+            --line-strong: #1a1a1a;
+            --line-subtle: #c8c6c1;
+            --accent-bg: #161616;
+            --accent-fg: #f5f4f1;
+            --font-serif: Georgia, "Times New Roman", Times, serif;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-page);
+            color: var(--ink-main);
+            font-family: var(--font-sans);
+            font-size: 14px;
+            line-height: 1.45;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 20px 28px 64px 28px;
+        }
+
+        /* Bovenste titelstrook */
+        .top-rule {
+            border-top: 1px solid var(--line-strong);
+            margin-bottom: 14px;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 20px;
+            padding-bottom: 18px;
+        }
+
+        .doc-title {
+            font-family: var(--font-serif);
+            font-size: clamp(26px, 3.6vw, 40px);
+            font-weight: 400;
+            line-height: 1.08;
+            letter-spacing: -0.01em;
+            margin: 0;
+            color: var(--ink-main);
+        }
+
+        .brand-mark {
+            font-family: var(--font-sans);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--ink-main);
+            white-space: nowrap;
+        }
+
+        /* Tab-balk met alleen Overzicht */
+        .tab-bar {
+            display: flex;
+            align-items: stretch;
+            border-top: 1px solid var(--line-strong);
+            border-bottom: 1px solid var(--line-strong);
+            margin-bottom: 26px;
+        }
+
+        .tab-btn {
+            appearance: none;
+            background: transparent;
+            border: none;
+            border-right: 1px solid var(--line-subtle);
+            color: var(--ink-main);
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 11px 22px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent-bg);
+            color: var(--accent-fg);
+        }
+
+        /* Hoofdlayout: Linker zijbalk + Rechter werkblad */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 270px 1px 1fr;
+            gap: 0;
+            align-items: start;
+        }
+
+        .sidebar {
+            padding-right: 22px;
+        }
+
+        .vertical-divider {
+            background-color: var(--line-strong);
+            align-self: stretch;
+            min-height: 520px;
+        }
+
+        .main-pane {
+            padding-left: 34px;
+        }
+
+        /* Zijbalk-items */
+        .nav-item {
+            display: block;
+            width: 100%;
+            text-align: left;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--line-subtle);
+            padding: 12px 14px;
+            cursor: pointer;
+            color: var(--ink-main);
+            font-family: var(--font-sans);
+            transition: background-color 0.12s ease;
+        }
+
+        .nav-item:hover:not(.active) {
+            background-color: rgba(0, 0, 0, 0.035);
+        }
+
+        .nav-item.active {
+            background-color: var(--accent-bg);
+            color: var(--accent-fg);
+            border-bottom-color: var(--accent-bg);
+        }
+
+        .nav-item-title {
+            font-size: 13px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .nav-item-sub {
+            font-size: 11.5px;
+            color: var(--ink-muted);
+            display: block;
+            margin-top: 2px;
+        }
+
+        .nav-item.active .nav-item-sub {
+            color: #c7c6c2;
+        }
+
+        /* Rechter koppen & subregels */
+        .pane-heading {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            font-weight: 400;
+            margin: 28px 0 6px 0;
+            color: var(--ink-main);
+        }
+
+        .pane-heading:first-child {
+            margin-top: 0;
+        }
+
+        .pane-meta {
+            font-size: 12.5px;
+            color: var(--ink-muted);
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--line-subtle);
+        }
+
+        /* Vragen & gekoppelde blokken */
+        .question-block {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--line-subtle);
+        }
+
+        .question-block:last-child {
+            border-bottom: none;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink-main);
+            margin-bottom: 6px;
+        }
+
+        .field-hint {
+            display: block;
+            font-size: 12px;
+            color: var(--ink-muted);
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--line-strong);
+            color: var(--ink-main);
+            font-family: var(--font-sans);
+            font-size: 13.5px;
+            padding: 9px 11px;
+            border-radius: 0;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            background-color: #ffffff;
+            box-shadow: inset 0 0 0 1px var(--line-strong);
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .choice-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px 18px;
+            margin-top: 6px;
+        }
+
+        .choice-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+
+        .choice-row input[type="checkbox"],
+        .choice-row input[type="radio"] {
+            margin-top: 2px;
+            accent-color: var(--ink-main);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* Gekoppelde vervolgvragen */
+        .linked-box {
+            margin-top: 12px;
+            padding: 14px 16px;
+            background-color: rgba(255, 255, 255, 0.35);
+            border-left: 3px solid var(--line-strong);
+            border-top: 1px solid var(--line-subtle);
+            border-right: 1px solid var(--line-subtle);
+            border-bottom: 1px solid var(--line-subtle);
+        }
+
+        .linked-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin: 0 0 10px 0;
+            color: var(--ink-main);
+        }
+
+        .action-link-btn {
+            appearance: none;
+            background: var(--accent-bg);
+            color: var(--accent-fg);
+            border: 1px solid var(--line-strong);
+            font-family: var(--font-sans);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 12px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .action-link-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Gekoppelde resultaten onderaan het overzicht */
+        .results-panel {
+            margin-top: 34px;
+            padding: 18px 20px;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--line-strong);
+        }
+
+        .results-heading {
+            font-family: var(--font-serif);
+            font-size: 22px;
+            font-weight: 400;
+            margin: 0 0 4px 0;
+        }
+
+        .coupling-group {
+            border-top: 1px solid var(--line-subtle);
+            padding: 14px 0;
+        }
+
+        .coupling-group:first-of-type {
+            border-top: none;
+            padding-top: 6px;
+        }
+
+        .coupling-group-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin: 0 0 8px 0;
+        }
+
+        .clean-list {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 13.5px;
+        }
+
+        .clean-list li {
+            margin-bottom: 6px;
+        }
+
+        .prijs-regel-preview {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--line-subtle);
+            font-size: 13.5px;
+        }
+
+        .prijs-regel-preview:last-child {
+            border-bottom: none;
+        }
+
+        /* Onderaan: Reset & PDF export */
+        .bottom-bar {
+            margin-top: 28px;
+            padding-top: 18px;
+            border-top: 1px solid var(--line-strong);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            appearance: none;
+            background: transparent;
+            color: var(--ink-main);
+            border: 1px solid var(--line-strong);
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 10px 18px;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-primary {
+            appearance: none;
+            background: var(--accent-bg);
+            color: var(--accent-fg);
+            border: 1px solid var(--line-strong);
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 10px 22px;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background-color: #2c2c2a;
+        }
+
+        .btn-primary:disabled {
+            background-color: #9e9d99;
+            border-color: #9e9d99;
+            color: #f3f2ef;
+            cursor: not-allowed;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* PDF-weergave in stijl van offertevoorbeeld */
+        #pdf-sheet {
+            display: none;
+        }
+
+        @media (max-width: 860px) {
+            .workspace-grid {
+                grid-template-columns: 1fr;
+            }
+            .vertical-divider {
+                display: none;
+            }
+            .sidebar {
+                padding-right: 0;
+                margin-bottom: 24px;
+                border-top: 1px solid var(--line-strong);
+            }
+            .main-pane {
+                padding-left: 0;
+            }
+            .form-grid-2,
+            .choice-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                margin: 0;
+                padding: 0;
+                font-family: var(--font-sans);
+                font-size: 11.5pt;
+                line-height: 1.42;
+            }
+            #app-shell {
+                display: none !important;
+            }
+            #pdf-sheet {
+                display: block !important;
+            }
+            @page {
+                size: A4;
+                margin: 15mm 16mm;
+            }
+            .pdf-sec {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                margin-top: 14px;
+            }
+            .pdf-h2 {
+                font-family: var(--font-serif);
+                font-size: 13.5pt;
+                font-weight: 700;
+                margin: 0 0 5px 0;
+                color: #000000;
+            }
+            .pdf-list {
+                margin: 0;
+                padding-left: 18px;
+            }
+            .pdf-list li {
+                margin-bottom: 3px;
+            }
+            .pdf-prijs-row {
+                display: flex;
+                justify-content: space-between;
+                gap: 24px;
+                border-bottom: 1px solid #999;
+                padding: 4px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-shell" class="container">
+        <div class="top-rule"></div>
+
+        <!-- Bovenste kopregel -->
+        <header class="header-row">
+            <h1 class="doc-title">Offerte Vragenlijst<br>Totaalonderhoud &amp; Opname</h1>
+            <div class="brand-mark">PlenderWestendorp · v1.1</div>
+        </header>
+
+        <!-- Alleen tab Overzicht -->
+        <nav class="tab-bar" aria-label="Overzicht">
+            <button type="button" id="tab-overzicht" class="tab-btn active" onclick="focusOverzicht()">Overzicht</button>
+        </nav>
+
+        <form id="offerte-form" onsubmit="return false;">
+            <div class="workspace-grid">
+
+                <!-- LINKER ZIJBALKEN: SECTIES MET LIVE TELLERS -->
+                <aside class="sidebar" aria-label="Onderdelen">
+                    <button type="button" class="nav-item active" data-sec="sec-basis" onclick="selectSectie('sec-basis')">
+                        <span class="nav-item-title">1. Opdracht &amp; Pand</span>
+                        <span class="nav-item-sub" id="cnt-sec-basis">0 gekoppeld</span>
+                    </button>
+                    <button type="button" class="nav-item" data-sec="sec-hoogte" onclick="selectSectie('sec-hoogte')">
+                        <span class="nav-item-title">2. Hoogte &amp; Steiger</span>
+                        <span class="nav-item-sub" id="cnt-sec-hoogte">0 gekoppeld</span>
+                    </button>
+                    <button type="button" class="nav-item" data-sec="sec-werk" onclick="selectSectie('sec-werk')">
+                        <span class="nav-item-title">3. Werkzaamheden</span>
+                        <span class="nav-item-sub" id="cnt-sec-werk">0 gekoppeld</span>
+                    </button>
+                    <button type="button" class="nav-item" data-sec="sec-planning" onclick="selectSectie('sec-planning')">
+                        <span class="nav-item-title">4. Planning &amp; Overige details</span>
+                        <span class="nav-item-sub" id="cnt-sec-planning">0 gekoppeld</span>
+                    </button>
+                    <button type="button" class="nav-item" data-sec="sec-koppelingen" onclick="selectSectie('sec-koppelingen')">
+                        <span class="nav-item-title">5. Gekoppelde items</span>
+                        <span class="nav-item-sub" id="cnt-sec-koppelingen">0 gekoppeld</span>
+                    </button>
+                </aside>
+
+                <div class="vertical-divider"></div>
+
+                <!-- RECHTER WERKBLAD (OVERZICHT) -->
+                <main class="main-pane" id="overzicht-pane">
+
+                    <!-- SECTIE 1: OPDRACHT & PAND -->
+                    <section id="sec-basis" class="pane-section">
+                        <h2 class="pane-heading">1. Opdracht &amp; Pand</h2>
+                        <div class="pane-meta" id="meta-sec-basis">0 gekoppeld · start leeg</div>
+
+                        <div class="question-block">
+                            <div class="form-grid-2">
+                                <div>
+                                    <label class="field-label" for="klant-naam">Opdrachtgever / Organisatie</label>
+                                    <input type="text" id="klant-naam" oninput="verwerkAlles()" placeholder="">
+                                </div>
+                                <div>
+                                    <label class="field-label" for="klant-contact">T.a.v. / Contactpersoon</label>
+                                    <input type="text" id="klant-contact" oninput="verwerkAlles()" placeholder="">
+                                </div>
+                                <div>
+                                    <label class="field-label" for="klant-adres">Adres / Huisnummer</label>
+                                    <input type="text" id="klant-adres" oninput="verwerkAlles()" placeholder="">
+                                </div>
+                                <div>
+                                    <label class="field-label" for="klant-plaats">Postcode &amp; Plaats</label>
+                                    <input type="text" id="klant-plaats" oninput="verwerkAlles()" placeholder="">
+                                </div>
+                                <div>
+                                    <label class="field-label" for="onderwerp-project">Onderwerp offerte (optioneel)</label>
+                                    <input type="text" id="onderwerp-project" oninput="verwerkAlles()" placeholder="">
+                                </div>
+                                <div>
+                                    <label class="field-label" for="behandeld-door">Behandeld door (optioneel)</label>
+                                    <input type="text" id="behandeld-door" oninput="verwerkAlles()" placeholder="">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="field-label" for="opdrachtgever">Type opdrachtgever</label>
+                            <select id="opdrachtgever" onchange="verwerkAlles()">
+                                <option value="">-- Kies --</option>
+                                <option value="particulier">Particulier</option>
+                                <option value="corporatie">Woningcorporatie / Vastgoedbeheer</option>
+                                <option value="vve">VvE</option>
+                                <option value="aannemer">Aannemer / Bouwbedrijf</option>
+                                <option value="instelling">Gemeente / School / Zorginstelling</option>
+                                <option value="zakelijk">Zakelijk / Bedrijfspand</option>
+                            </select>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="field-label" for="pandtype">Type pand &amp; ouderdom</label>
+                            <select id="pandtype" onchange="verwerkAlles()">
+                                <option value="">-- Kies --</option>
+                                <option value="woning_oud">Bestaande woning (ouder dan 2 jaar)</option>
+                                <option value="woning_nieuw">Nieuwbouwwoning (jonger dan 2 jaar)</option>
+                                <option value="monument">Monumentaal / Historisch pand</option>
+                                <option value="utiliteit">Bedrijfspand / Utiliteit / Zorgcomplex</option>
+                            </select>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="field-label" for="overige-basis">Overige details · Opdracht &amp; Pand (optioneel)</label>
+                            <textarea id="overige-basis" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
+                        </div>
+                    </section>
+
+                    <!-- SECTIE 2: HOOGTE & STEIGER -->
+                    <section id="sec-hoogte" class="pane-section">
+                        <h2 class="pane-heading">2. Hoogte &amp; Steiger</h2>
+                        <div class="pane-meta" id="meta-sec-hoogte">0 gekoppeld · start leeg</div>
+
+                        <div class="question-block">
+                            <label class="field-label" for="werkhoogte">Werkhoogte &amp; bereikbaarheid</label>
+                            <select id="werkhoogte" onchange="verwerkAlles()">
+                                <option value="">-- Kies --</option>
+                                <option value="bg">Alleen begane grond</option>
+                                <option value="verd1">Tot en met 1e verdieping</option>
+                                <option value="verd2plus">2e verdieping of hoger</option>
+                                <option value="moeilijk">Lastig bereikbaar (dakkapel / uitbouw / water / steeg)</option>
+                            </select>
+
+                            <!-- KOPPELING: STEIGER AANWEZIG? -->
+                            <div id="koppel-steiger" class="linked-box hidden">
+                                <div class="linked-title">Gekoppelde vraag · Steiger aanwezig?</div>
+                                <div class="choice-grid">
+                                    <label class="choice-row">
+                                        <input type="radio" name="steiger_aanwezig" value="ja" onchange="verwerkAlles()">
+                                        <span>Ja, steiger is aanwezig</span>
+                                    </label>
+                                    <label class="choice-row">
+                                        <input type="radio" name="steiger_aanwezig" value="nee" onchange="verwerkAlles()">
+                                        <span>Nee, steiger / klimmaterieel nodig</span>
+                                    </label>
+                                </div>
+
+                                <!-- Sub-koppeling JA -->
+                                <div id="sub-steiger-ja" class="linked-box hidden">
+                                    <label class="choice-row">
+                                        <input type="checkbox" id="steiger-keuring" onchange="verwerkAlles()">
+                                        <span>VCA-keuring en vrijgave aanwezige steiger controleren</span>
+                                    </label>
+                                    <label class="choice-row">
+                                        <input type="checkbox" id="steiger-ombouw" onchange="verwerkAlles()">
+                                        <span>Aanpassing / verplaatsing / opbouw aanwezige steiger</span>
+                                    </label>
+                                </div>
+
+                                <!-- Sub-koppeling NEE -->
+                                <div id="sub-steiger-nee" class="linked-box hidden">
+                                    <span class="field-hint">Selecteer benodigd materieel:</span>
+                                    <div class="choice-grid">
+                                        <label class="choice-row">
+                                            <input type="checkbox" name="materieel_keuze" value="Rolsteiger" onchange="verwerkAlles()">
+                                            <span>Rolsteiger</span>
+                                        </label>
+                                        <label class="choice-row">
+                                            <input type="checkbox" name="materieel_keuze" value="Vaste gevelsteiger" onchange="verwerkAlles()">
+                                            <span>Vaste gevelsteiger</span>
+                                        </label>
+                                        <label class="choice-row">
+                                            <input type="checkbox" name="materieel_keuze" value="Hoogwerker" onchange="verwerkAlles()">
+                                            <span>Hoogwerker</span>
+                                        </label>
+                                        <label class="choice-row">
+                                            <input type="checkbox" name="materieel_keuze" value="Valbeveiliging / dakrandbeveiliging" onchange="verwerkAlles()">
+                                            <span>Val- / dakrandbeveiliging</span>
+                                        </label>
+                                    </div>
+                                    <label class="choice-row" style="margin-top:8px;">
+                                        <input type="checkbox" id="steiger-vergunning" onchange="verwerkAlles()">
+                                        <span>Openbare weg / vergunning / afzetting van toepassing</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <span class="field-label">Betrokken bouwlagen / ruimtes</span>
+                            <div class="choice-grid">
+                                <label class="choice-row">
+                                    <input type="checkbox" name="bouwlaag" value="kelder" onchange="verwerkAlles()">
+                                    <span>Kelder</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="bouwlaag" value="begane grond" onchange="verwerkAlles()">
+                                    <span>Begane grond</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="bouwlaag" value="1e verdieping" onchange="verwerkAlles()">
+                                    <span>1e verdieping</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="bouwlaag" value="2e verdieping" onchange="verwerkAlles()">
+                                    <span>2e verdieping</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="bouwlaag" value="3e verdieping en hoger" onchange="verwerkAlles()">
+                                    <span>3e verdieping en hoger</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <span class="field-label">Locatie &amp; gebruik tijdens uitvoering</span>
+                            <div class="choice-grid">
+                                <label class="choice-row">
+                                    <input type="checkbox" id="chk-bewoond" onchange="verwerkAlles()">
+                                    <span>Bewoond / in bedrijf tijdens werk</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" id="chk-voorzieningen" onchange="verwerkAlles()">
+                                    <span>Beperkte stroom/water of parkeren</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="field-label" for="overige-hoogte">Overige details · Hoogte, Steiger &amp; Bouwlagen (optioneel)</label>
+                            <textarea id="overige-hoogte" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
+                        </div>
+                    </section>
+
+                    <!-- SECTIE 3: WERKZAAMHEDEN & GEKOPPELDE SUBVRAGEN -->
+                    <section id="sec-werk" class="pane-section">
+                        <h2 class="pane-heading">3. Werkzaamheden</h2>
+                        <div class="pane-meta" id="meta-sec-werk">0 gekoppeld · start leeg</div>
+
+                        <div class="question-block">
+                            <span class="field-label">Kies een of meerdere disciplines</span>
+                            <div class="choice-grid">
+                                <label class="choice-row">
+                                    <input type="checkbox" id="d-buiten" onchange="verwerkAlles()">
+                                    <span>Buitenschilderwerk</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" id="d-binnen" onchange="verwerkAlles()">
+                                    <span>Binnenschilderwerk &amp; behang / scanwerk</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" id="d-glas" onchange="verwerkAlles()">
+                                    <span>Glaszetten</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" id="d-timmer" onchange="verwerkAlles()">
+                                    <span>Timmerwerk, houtrot &amp; afbouw</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" id="d-gevel" onchange="verwerkAlles()">
+                                    <span>Gevelonderhoud, gevelreiniging, isolatie &amp; verduurzaming</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- GEKOPPELDE VRAGEN: BUITENSCHILDERWERK -->
+                        <div id="koppel-buiten" class="linked-box hidden">
+                            <div class="linked-title">Gekoppeld · Buitenschilderwerk</div>
+                            <div class="choice-grid">
+                                <label class="choice-row">
+                                    <input type="checkbox" name="buiten_deel" value="kozijnen, ramen en deuren" onchange="verwerkAlles()">
+                                    <span>Kozijnen, ramen &amp; deuren</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="buiten_deel" value="boeidelen, windveren en dakoverstekken" onchange="verwerkAlles()">
+                                    <span>Boeidelen &amp; dakoverstekken</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="buiten_deel" value="dakkapel(len)" onchange="verwerkAlles()">
+                                    <span>Dakkapel(len)</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="buiten_deel" value="gevels sauzen / kaleien" onchange="verwerkAlles()">
+                                    <span>Gevels sauzen / kaleien</span>
+                                </label>
+                            </div>
+
+                            <div style="margin-top:12px;">
+                                <label class="field-label" for="buiten-conditie">Conditie &amp; behandeling bestaand verfsysteem</label>
+                                <select id="buiten-conditie" onchange="verwerkAlles()">
+                                    <option value="">-- Kies --</option>
+                                    <option value="goed">Goed (reinigen, mat schuren, kleine reparaties bijwerken, voorlakken en aflakken)</option>
+                                    <option value="matig">Matig (reinigen, loszittende lagen verwijderen/kaalhalen, herstel reparaties, gronden, voorlakken en aflakken)</option>
+                                    <option value="slecht">Slecht / Transparant naar dekkend (intensief schuren/afkrabben, kleine reparaties en kitwerk, nieuw 3-laags dekkend systeem)</option>
+                                </select>
+                            </div>
+
+                            <div class="choice-grid" style="margin-top:10px;">
+                                <label class="choice-row">
+                                    <input type="checkbox" id="buiten-kleur" onchange="verwerkAlles()">
+                                    <span>Kleurwijziging / nader te bepalen kleurstelling</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" id="buiten-kit" onchange="verwerkAlles()">
+                                    <span>Beglazingskit / openstaande naden uitsnijden en opnieuw afkitten</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" id="buiten-houtrot" onchange="verwerkAlles()">
+                                    <span>Houtrot aanwezig / verwacht</span>
+                                </label>
+                            </div>
+
+                            <div id="koppeling-buiten-timmer" class="hidden" style="margin-top:8px;">
+                                <button type="button" class="action-link-btn" onclick="koppelTimmerwerk()">Open gekoppelde houtrot-vragen</button>
+                            </div>
+
+                            <div style="margin-top:12px;">
+                                <label class="field-label" for="overige-buiten">Overige details · Buitenschilderwerk (optioneel)</label>
+                                <textarea id="overige-buiten" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
+                            </div>
+                        </div>
+
+                        <!-- GEKOPPELDE VRAGEN: BINNENSCHILDERWERK & BEHANG / SCANWERK -->
+                        <div id="koppel-binnen" class="linked-box hidden">
+                            <div class="linked-title">Gekoppeld · Binnenschilderwerk &amp; behang / scanwerk</div>
+                            <div class="choice-grid">
+                                <label class="choice-row">
+                                    <input type="checkbox" name="binnen_deel" value="gangen" onchange="verwerkAlles()">
+                                    <span>Gangen</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="binnen_deel" value="trappenhuizen en gemeenschappelijke ruimtes" onchange="verwerkAlles()">
+                                    <span>Trappenhuizen &amp; gemeenschappelijke ruimtes</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="binnen_deel" value="wanden en plafonds" onchange="verwerkAlles()">
+                                    <span>Wanden &amp; plafonds</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="binnen_deel" value="kozijnen, deuren en plinten" onchange="verwerkAlles()">
+                                    <span>Kozijnen, deuren &amp; plinten</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="binnen_deel" value="behang- en scanwerk (wanden)" onchange="verwerkAlles()">
+                                    <span>Behang- / scanwerk</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="binnen_deel" value="mutatieonderhoud (woning / kamer)" onchange="verwerkAlles()">
+                                    <span>Mutatieonderhoud</span>
+                                </label>
+                            </div>
+
+                            <div style="margin-top:12px;">
+                                <label class="field-label" for="binnen-behandeling">Behandeling wanden / plafonds / scan</label>
+                                <select id="binnen-behandeling" onchange="verwerkAlles()">
+                                    <option value="">-- Kies --</option>
+                                    <option value="scan_verwijderen_nieuw">Verwijderen van de bestaande scan, kleine reparaties en kitwerk, scan plakken (blokje), dekkend sausen</option>
+                                    <option value="bestaand_sausen">Reinigen, kleine reparaties en kitwerk bijwerken en dekkend sausen</option>
+                                    <option value="nieuw_behang_sausen">Voorbereiden ondergrond, behang/scan aanbrengen en dekkend sausen</option>
+                                </select>
+                            </div>
+
+                            <div class="form-grid-2" style="margin-top:12px;">
+                                <div>
+                                    <label class="field-label" for="binnen-kleur">Kleurstelling</label>
+                                    <select id="binnen-kleur" onchange="verwerkAlles()">
+                                        <option value="">-- Kies --</option>
+                                        <option value="nader_licht">In een nader te bepalen lichte kleurstelling</option>
+                                        <option value="nader_keuze">In een nader te bepalen kleurstelling</option>
+                                        <option value="conform_opgave">Conform opgave / bestaand</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="field-label" for="binnen-staat-ruimte">Ruimtes</label>
+                                    <select id="binnen-staat-ruimte" onchange="verwerkAlles()">
+                                        <option value="">-- Kies --</option>
+                                        <option value="leeg">Leeg</option>
+                                        <option value="gemeubileerd">Gemeubileerd (afdekken)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-grid-2" style="margin-top:12px;">
+                                <div>
+                                    <label class="field-label" for="binnen-ondergrond">Ondergrond / voorstrijk</label>
+                                    <select id="binnen-ondergrond" onchange="verwerkAlles()">
+                                        <option value="">-- Kies --</option>
+                                        <option value="bestaand">Bestaande ondergrond na voorbehandeling</option>
+                                        <option value="nieuwstuc">Nieuw stucwerk (voorstrijken tegen zuiging)</option>
+                                        <option value="vlekken">Vlekken / nicotine / vocht (isolerende voorstrijk)</option>
+                                    </select>
+                                </div>
+                                <div style="display:flex; align-items:flex-end;">
+                                    <label class="choice-row">
+                                        <input type="checkbox" id="binnen-spuiten" onchange="verwerkAlles()">
+                                        <span>Airless spuitwerk (incl. afplakken &amp; afdekken)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div style="margin-top:12px;">
+                                <label class="field-label" for="overige-binnen">Overige details · Binnenschilderwerk &amp; behang / scanwerk (optioneel)</label>
+                                <textarea id="overige-binnen" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
+                            </div>
+                        </div>
+
+                        <!-- GEKOPPELDE VRAGEN: GLASZETTEN -->
+                        <div id="koppel-glas" class="linked-box hidden">
+                            <div class="linked-title">Gekoppeld · Glaszetten</div>
+                            <div class="choice-grid">
+                                <label class="choice-row">
+                                    <input type="checkbox" name="glas_soort" value="HR++ isolatieglas" onchange="verwerkAlles()">
+                                    <span>HR++ isolatieglas</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="glas_soort" value="Vacuümglas" onchange="verwerkAlles()">
+                                    <span>Vacuümglas</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" id="glas-triple" name="glas_soort" value="Triple glas (HR+++)" onchange="verwerkAlles()">
+                                    <span>Triple glas (HR+++)</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="glas_soort" value="Monumentenglas" onchange="verwerkAlles()">
+                                    <span>Monumentenglas</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="glas_soort" value="Geluidwerend glas" onchange="verwerkAlles()">
+                                    <span>Geluidwerend glas</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" id="glas-brand" name="glas_soort" value="Brandwerend isolatieglas" onchange="verwerkAlles()">
+                                    <span>Brandwerend isolatieglas</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="glas_soort" value="Zonwerend isolatieglas" onchange="verwerkAlles()">
+                                    <span>Zonwerend isolatieglas</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="glas_soort" value="Figuurglas / glas in lood / hardglas" onchange="verwerkAlles()">
+                                    <span>Figuurglas / glas in lood / hardglas</span>
+                                </label>
+                            </div>
+
+                            <div class="form-grid-2" style="margin-top:12px;">
+                                <div>
+                                    <label class="field-label" for="glas-zijde">Beglazingszijde</label>
+                                    <select id="glas-zijde" onchange="verwerkAlles()">
+                                        <option value="">-- Kies --</option>
+                                        <option value="buiten">Buiten beglaasd</option>
+                                        <option value="binnen">Binnen beglaasd</option>
+                                        <option value="beide">Binnen &amp; buiten</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="field-label" for="glas-aantal">Aantal ruiten</label>
+                                    <input type="number" min="1" id="glas-aantal" oninput="verwerkAlles()" placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="choice-grid" style="margin-top:10px;">
+                                <label class="choice-row">
+                                    <input type="checkbox" id="glas-roosters" onchange="verwerkAlles()">
+                                    <span>Ventilatieroosters leveren en plaatsen</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" id="glas-latten" onchange="verwerkAlles()">
+                                    <span>Nieuwe glas- / neuslatten plaatsen</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" id="glas-zwaar" onchange="verwerkAlles()">
+                                    <span>Zware / grote ruiten (kraan / vacuümzuiger / extra mankracht)</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" id="glas-afvoer" onchange="verwerkAlles()">
+                                    <span>Oud glas verwijderen en afvoeren</span>
+                                </label>
+                            </div>
+
+                            <div id="sub-glas-latten" class="linked-box hidden">
+                                <label class="choice-row">
+                                    <input type="checkbox" id="glas-latten-lak" onchange="verwerkAlles()">
+                                    <span>Nieuwe glas-/neuslatten ook voorlakken en aflakken</span>
+                                </label>
+                            </div>
+
+                            <div style="margin-top:12px;">
+                                <label class="field-label" for="overige-glas">Overige details · Glaszetten (optioneel)</label>
+                                <textarea id="overige-glas" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
+                            </div>
+                        </div>
+
+                        <!-- GEKOPPELDE VRAGEN: TIMMERWERK, HOUTROT & AFBOUW -->
+                        <div id="koppel-timmer" class="linked-box hidden">
+                            <div class="linked-title">Gekoppeld · Timmerwerk, houtrot &amp; afbouw</div>
+                            <div class="choice-grid">
+                                <label class="choice-row">
+                                    <input type="checkbox" id="timmer-houtrot" name="timmer_deel" value="Houtrotherstel" onchange="verwerkAlles()">
+                                    <span>Houtrotherstel</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="timmer_deel" value="Nieuwe kozijnen, ramen, deuren of gevelelementen" onchange="verwerkAlles()">
+                                    <span>Kozijnen, ramen, deuren &amp; gevelelementen</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="timmer_deel" value="Afbouw (gipswanden, plafonds, aftimmerwerk)" onchange="verwerkAlles()">
+                                    <span>Afbouw (gipswanden, plafonds, aftimmeren)</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="timmer_deel" value="Stucwerk en kleine reparaties" onchange="verwerkAlles()">
+                                    <span>Stucwerk &amp; reparaties</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="timmer_deel" value="Hang- en sluitwerk / tochtwering" onchange="verwerkAlles()">
+                                    <span>Hang- en sluitwerk / tochtwering</span>
+                                </label>
+                            </div>
+
+                            <div id="sub-timmer-houtrot" class="linked-box hidden">
+                                <label class="field-label" for="houtrot-aard">Koppeling houtrot-aanpak</label>
+                                <select id="houtrot-aard" onchange="verwerkAlles()">
+                                    <option value="">-- Kies --</option>
+                                    <option value="epoxy">Plaatselijk uitfrezen, behandelen en repareren met 2K-epoxy</option>
+                                    <option value="deel">Deelvervanging aangetast hout + 2x gronden</option>
+                                    <option value="stelpost">Stelpost / opname na volledig openmaken</option>
+                                </select>
+                            </div>
+
+                            <label class="choice-row" style="margin-top:10px;">
+                                <input type="checkbox" id="timmer-afval" onchange="verwerkAlles()">
+                                <span>Sloop- en houtafval verwijderen en afvoeren</span>
+                            </label>
+
+                            <div style="margin-top:12px;">
+                                <label class="field-label" for="overige-timmer">Overige details · Timmerwerk, houtrot &amp; afbouw (optioneel)</label>
+                                <textarea id="overige-timmer" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
+                            </div>
+                        </div>
+
+                        <!-- GEKOPPELDE VRAGEN: GEVELONDERHOUD, GEVELREINIGING & ISOLATIE -->
+                        <div id="koppel-gevel" class="linked-box hidden">
+                            <div class="linked-title">Gekoppeld · Gevelonderhoud, gevelreiniging, isolatie &amp; verduurzaming</div>
+                            <div class="choice-grid">
+                                <label class="choice-row">
+                                    <input type="checkbox" name="gevel_deel" value="Gevelreiniging" onchange="verwerkAlles()">
+                                    <span>Gevelreiniging</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="gevel_deel" value="Gevel- en betonherstel" onchange="verwerkAlles()">
+                                    <span>Gevel- &amp; betonherstel</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="gevel_deel" value="Gevel- en/of dakrandisolatie" onchange="verwerkAlles()">
+                                    <span>Gevel- / dakrandisolatie</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="gevel_deel" value="Dakgoten en hemelwaterafvoeren (HWA)" onchange="verwerkAlles()">
+                                    <span>Dakgoten &amp; HWA</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" name="gevel_deel" value="Kierdichting en gevelopeningen" onchange="verwerkAlles()">
+                                    <span>Kierdichting</span>
+                                </label>
+                            </div>
+                            <div class="choice-grid" style="margin-top:10px;">
+                                <label class="choice-row">
+                                    <input type="checkbox" id="gevel-vdk" onchange="verwerkAlles()">
+                                    <span>Ventilatie / WTW (Climarad) / elektra (VDK Groep)</span>
+                                </label>
+                                <label class="choice-row">
+                                    <input type="checkbox" id="gevel-asbest" onchange="verwerkAlles()">
+                                    <span>Asbestverdacht plaatmateriaal</span>
+                                </label>
+                            </div>
+
+                            <div style="margin-top:12px;">
+                                <label class="field-label" for="overige-gevel">Overige details · Gevelreiniging, gevelonderhoud &amp; isolatie (optioneel)</label>
+                                <textarea id="overige-gevel" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SECTIE 4: PLANNING & OVERIGE DETAILS -->
+                    <section id="sec-planning" class="pane-section">
+                        <h2 class="pane-heading">4. Planning &amp; Overige details</h2>
+                        <div class="pane-meta" id="meta-sec-planning">0 gekoppeld · start leeg</div>
+
+                        <div class="question-block">
+                            <div class="form-grid-2">
+                                <div>
+                                    <label class="field-label" for="project-ref">Project / Referentie (optioneel)</label>
+                                    <input type="text" id="project-ref" oninput="verwerkAlles()" placeholder="">
+                                </div>
+                                <div>
+                                    <label class="field-label" for="planning-keuze">Gewenste uitvoering / uitgangspunt</label>
+                                    <select id="planning-keuze" onchange="verwerkAlles()">
+                                        <option value="">-- Kies --</option>
+                                        <option value="Eigen opname op locatie">Eigen opname op locatie</option>
+                                        <option value="Zo spoedig mogelijk">Zo spoedig mogelijk</option>
+                                        <option value="Voorjaar / Zomer">Voorjaar / Zomer</option>
+                                        <option value="Najaar / Winterschilder">Najaar / Winterschilder</option>
+                                        <option value="MJOP / Meerjarenonderhoud">MJOP / Meerjarenonderhoud</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="field-label" for="prijs-posten">Prijsregels / onderdelen op de offerte (optioneel, standaard €Niet gerekend)</label>
+                            <span class="field-hint">Zet elke regel op een nieuwe regel (bijv. "Binnen schilderwerk 2 lokalen"). Op de offerte komt automatisch €Niet gerekend te staan.</span>
+                            <textarea id="prijs-posten" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="field-label" for="overige-details">Overige details (optioneel)</label>
+                            <span class="field-hint">Aanvullende beschrijving van wat er gebeurt, maten, uitzonderingen of afspraken op de offerte.</span>
+                            <textarea id="overige-details" rows="4" oninput="verwerkAlles()" placeholder=""></textarea>
+                        </div>
+                    </section>
+
+                    <!-- SECTIE 5: GEKOPPELDE ITEMS IN HET OVERZICHT -->
+                    <section id="sec-koppelingen" class="results-panel">
+                        <h2 class="results-heading">5. Gekoppelde items</h2>
+                        <div class="pane-meta" id="koppelingen-submeta">0 gekoppeld · start leeg</div>
+
+                        <div id="koppelingen-leeg">
+                            <span class="field-hint" style="margin:0;">Nog niets gekoppeld. Zodra je hierboven keuzes of overige details invult, verschijnen hier de gekoppelde onderdelen.</span>
+                        </div>
+
+                        <div id="koppelingen-gevuld" class="hidden">
+                            <div class="coupling-group" id="grp-werk">
+                                <h3 class="coupling-group-title">Werkzaamheden &amp; behandeling</h3>
+                                <ul class="clean-list" id="list-werk"></ul>
+                            </div>
+                            <div class="coupling-group" id="grp-steiger">
+                                <h3 class="coupling-group-title">Steiger, materieel &amp; voorzieningen</h3>
+                                <ul class="clean-list" id="list-steiger"></ul>
+                            </div>
+                            <div class="coupling-group" id="grp-prijs">
+                                <h3 class="coupling-group-title">Prijsaanbieding</h3>
+                                <div id="list-prijs"></div>
+                            </div>
+                            <div class="coupling-group" id="grp-aandacht">
+                                <h3 class="coupling-group-title">Uitgangspunten, aandachtspunten &amp; overige details</h3>
+                                <ul class="clean-list" id="list-aandacht"></ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ONDERIN: OPNIEUW BEGINNEN & EXPORTEREN ALS PDF -->
+                    <div class="bottom-bar">
+                        <button type="button" class="btn-secondary" onclick="opnieuwBeginnen()">Opnieuw beginnen</button>
+                        <button type="button" id="btn-export-pdf" class="btn-primary" onclick="exporteerPDF()" disabled>Exporteren als PDF</button>
+                    </div>
+
+                </main>
+            </div>
+        </form>
+    </div>
+
+    <!-- ======================================================
+         PDF-DOCUMENT (STIJL OFFERTEVOORBEELD PLENDERWESTENDORP)
+         ====================================================== -->
+    <div id="pdf-sheet">
+        <!-- Adresblok links + Kampen & datum rechts -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 18px;">
+            <div id="pdf-adresblok" style="min-height: 60px;"></div>
+            <div style="text-align: right; white-space: nowrap;">Kampen, <span id="pdf-datum"></span></div>
+        </div>
+
+        <!-- Onderwerp & Behandeld door -->
+        <div style="margin-bottom: 16px;">
+            <div id="pdf-onderwerp-regel" style="display: flex; gap: 14px; margin-bottom: 4px;">
+                <span style="min-width: 120px;">Onderwerp</span>
+                <span>:</span>
+                <span id="pdf-onderwerp-tekst" style="font-weight: 600;"></span>
+            </div>
+            <div id="pdf-behandeld-regel" style="display: flex; gap: 14px;">
+                <span style="min-width: 120px;">Behandeld door</span>
+                <span>:</span>
+                <span id="pdf-behandeld-tekst"></span>
+            </div>
+        </div>
+
+        <!-- Aanhef & intro -->
+        <p id="pdf-aanhef" style="margin: 0 0 10px 0;"></p>
+        <p style="margin: 0 0 14px 0;">Hierbij ontvangt u onze offerte voor het bovengenoemde project. De offerte is tot stand gekomen op basis van de volgende uitgangspunten:</p>
+
+        <!-- Uitgangspunten -->
+        <div class="pdf-sec" id="pdf-sec-uitgangspunten">
+            <h2 class="pdf-h2">Uitgangspunten</h2>
+            <ul class="pdf-list" id="pdf-list-uitgangspunten"></ul>
+        </div>
+
+        <!-- Werkzaamheden -->
+        <div class="pdf-sec" id="pdf-sec-werkzaamheden">
+            <h2 class="pdf-h2">Werkzaamheden</h2>
+            <ul class="pdf-list" id="pdf-list-werkzaamheden"></ul>
+        </div>
+
+        <!-- Behandeling -->
+        <div class="pdf-sec" id="pdf-sec-behandeling">
+            <h2 class="pdf-h2">Behandeling</h2>
+            <ul class="pdf-list" id="pdf-list-behandeling"></ul>
+        </div>
+
+        <!-- Overige details -->
+        <div class="pdf-sec hidden" id="pdf-sec-overige">
+            <h2 class="pdf-h2">Overige details</h2>
+            <p id="pdf-overige-tekst" style="margin: 0; white-space: pre-line;"></p>
+        </div>
+
+        <!-- Prijsaanbieding -->
+        <div class="pdf-sec" id="pdf-sec-prijs">
+            <h2 class="pdf-h2">Prijsaanbieding</h2>
+            <p style="margin: 0 0 8px 0;">De beschreven werkzaamheden in de offerte kunnen wij aanbieden voor:</p>
+            <div id="pdf-prijs-regels" style="max-width: 520px;"></div>
+            <p style="margin: 10px 0 0 0; font-size: 10.5pt; color: #333;">Overige niet benoemde werkzaamheden vallen buiten deze opgave.</p>
+        </div>
+
+        <!-- Algemene voorwaarden en condities -->
+        <div class="pdf-sec">
+            <h2 class="pdf-h2">Algemene voorwaarden en condities</h2>
+            <p style="margin: 0 0 6px 0;">De prijzen zijn gebaseerd op de huidige loon- en materiaalkosten. Onze prijzen staan vast tot 3 maanden na offertedatum. Na deze datum kunnen wijzigingen worden doorberekend.</p>
+            <p style="margin: 0 0 6px 0;">Facturatie per e-mail naar rato uitgevoerde werkzaamheden.</p>
+            <p style="margin: 0;">Betalingen binnen 14 dagen na factuurdatum.</p>
+        </div>
+
+        <!-- Afsluiting & akkoord -->
+        <div class="pdf-sec" style="margin-top: 18px;">
+            <p style="margin: 0 0 18px 0;">Vertrouwende u hiermee een passende aanbieding te hebben gedaan. Bij akkoord ontvangen wij graag een getekend exemplaar retour.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 36px;">
+                <div>
+                    <div style="margin-bottom: 24px;">Met vriendelijke groet,</div>
+                    <div style="font-weight: 700;">Plenderwestendorp</div>
+                    <div id="pdf-ondertekenaar"></div>
+                </div>
+                <div>
+                    <div style="margin-bottom: 24px;">Handtekening:</div>
+                    <div style="border-bottom: 1px solid #000; margin-bottom: 14px; height: 22px;"></div>
+                    <div>Datum: ........................................</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let koppelingen = {
+            werkzaamheden: [],
+            behandeling: [],
+            materieel: [],
+            uitgangspunten: [],
+            prijsPosten: [],
+            overigeTekst: '',
+            perSectie: {
+                'sec-basis': 0,
+                'sec-hoogte': 0,
+                'sec-werk': 0,
+                'sec-planning': 0
+            }
+        };
+
+        function focusOverzicht() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function selectSectie(secId) {
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-sec') === secId);
+            });
+            const doel = document.getElementById(secId);
+            if (doel) {
+                doel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function koppelTimmerwerk() {
+            const cb = document.getElementById('d-timmer');
+            const houtrotCb = document.getElementById('timmer-houtrot');
+            if (cb) cb.checked = true;
+            if (houtrotCb) houtrotCb.checked = true;
+            verwerkAlles();
+            document.getElementById('koppel-timmer').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function getChecked(name) {
+            return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(i => i.value);
+        }
+
+        function getRadio(name) {
+            const el = document.querySelector(`input[name="${name}"]:checked`);
+            return el ? el.value : '';
+        }
+
+        function toggle(id, show) {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('hidden', !show);
+        }
+
+        function formatBouwlagen(lagen) {
+            if (!lagen || lagen.length === 0) return '';
+            if (lagen.length === 1) return lagen[0];
+            if (lagen.length === 2) return `${lagen[0]} en ${lagen[1]}`;
+            const laatste = lagen[lagen.length - 1];
+            const overige = lagen.slice(0, -1).join(', ');
+            return `${overige} en ${laatste}`;
+        }
+
+        function verwerkAlles() {
+            const werkzaamheden = [];
+            const behandeling = [];
+            const materieel = [];
+            const uitgangspunten = [];
+            const prijsPosten = [];
+            const cnt = {
+                'sec-basis': 0,
+                'sec-hoogte': 0,
+                'sec-werk': 0,
+                'sec-planning': 0
+            };
+
+            // 1. OPDRACHT & PAND
+            const opdrachtgever = document.getElementById('opdrachtgever').value;
+            const pandtype = document.getElementById('pandtype').value;
+            const overigeBasis = document.getElementById('overige-basis').value.trim();
+
+            const dBuiten = document.getElementById('d-buiten').checked;
+            const dBinnen = document.getElementById('d-binnen').checked;
+            const dGlas = document.getElementById('d-glas').checked;
+            const dTimmer = document.getElementById('d-timmer').checked;
+            const dGevel = document.getElementById('d-gevel').checked;
+
+            if (opdrachtgever === 'particulier') {
+                uitgangspunten.push('Particuliere opdracht: uitvoering schilderwerk mogelijk via Schildersbedrijf Westendorp.');
+                cnt['sec-basis']++;
+            } else if (opdrachtgever === 'corporatie' || opdrachtgever === 'vve' || opdrachtgever === 'instelling') {
+                uitgangspunten.push('Bewonerscommunicatie, planning en VCA* veiligheidsvoorwaarden van toepassing.');
+                cnt['sec-basis']++;
+            } else if (opdrachtgever === 'aannemer') {
+                uitgangspunten.push('Afstemming van planning, steigergebruik en oplevering met de hoofdaannemer.');
+                cnt['sec-basis']++;
+            } else if (opdrachtgever === 'zakelijk') {
+                uitgangspunten.push('Uitvoering in overleg afstemmen op de bedrijfsprocessen en openingstijden.');
+                cnt['sec-basis']++;
+            }
+
+            if (pandtype === 'woning_oud' && (dBuiten || dBinnen)) {
+                uitgangspunten.push('Bestaande woning ouder dan 2 jaar: 9% BTW-tarief van toepassing op schilder-/stukadoorswerk.');
+                cnt['sec-basis']++;
+            }
+            if (pandtype === 'monument') {
+                uitgangspunten.push('Monumentaal pand: rekening houden met monumentale eisen, kleurstelling en materialen.');
+                cnt['sec-basis']++;
+            }
+            if (overigeBasis) {
+                uitgangspunten.push(overigeBasis);
+                cnt['sec-basis']++;
+            }
+
+            // 2. HOOGTE, STEIGER & BOUWLAGEN
+            const hoogte = document.getElementById('werkhoogte').value;
+            const steigerVraagZichtbaar = (hoogte === 'verd1' || hoogte === 'verd2plus' || hoogte === 'moeilijk');
+            toggle('koppel-steiger', steigerVraagZichtbaar);
+
+            const lagen = getChecked('bouwlaag');
+            if (lagen.length > 0) {
+                werkzaamheden.push(`Diverse werkzaamheden ${formatBouwlagen(lagen)}.`);
+                cnt['sec-hoogte']++;
+            }
+
+            if (steigerVraagZichtbaar) {
+                const steigerAanwezig = getRadio('steiger_aanwezig');
+                toggle('sub-steiger-ja', steigerAanwezig === 'ja');
+                toggle('sub-steiger-nee', steigerAanwezig === 'nee');
+
+                if (steigerAanwezig === 'ja') {
+                    materieel.push('Steiger is reeds aanwezig op locatie en wordt door derden verzorgd.');
+                    cnt['sec-hoogte']++;
+                    if (document.getElementById('steiger-keuring').checked) {
+                        uitgangspunten.push('Aanwezige steiger dient VCA-gekeurd en vrijgegeven te zijn vóór aanvang van de werkzaamheden.');
+                        cnt['sec-hoogte']++;
+                    }
+                    if (document.getElementById('steiger-ombouw').checked) {
+                        materieel.push('Aanpassen, verplaatsen of ombouwen van aanwezige steiger.');
+                        cnt['sec-hoogte']++;
+                    }
+                } else if (steigerAanwezig === 'nee') {
+                    const gekozenMat = getChecked('materieel_keuze');
+                    if (gekozenMat.length > 0) {
+                        gekozenMat.forEach(m => {
+                            materieel.push(`Inzet van ${m.toLowerCase()} (inclusief aan-/afvoer en op-/afbouw waar van toepassing).`);
+                            cnt['sec-hoogte']++;
+                        });
+                    } else {
+                        materieel.push('Klimmaterieel / steiger door Plender te verzorgen (specifiek materieel nog vaststellen).');
+                        cnt['sec-hoogte']++;
+                    }
+                    if (document.getElementById('steiger-vergunning').checked) {
+                        uitgangspunten.push('Vergunning / afzetting openbare weg en vrijhouden van werk-/parkeerruimte afstemmen.');
+                        cnt['sec-hoogte']++;
+                    }
+                } else {
+                    uitgangspunten.push('Werk op hoogte geselecteerd: nog vastleggen of er een steiger aanwezig is.');
+                    cnt['sec-hoogte']++;
+                }
+
+                if (hoogte === 'moeilijk') {
+                    uitgangspunten.push('Lastig bereikbare delen: vooraf op locatie beoordelen op benodigd klim- en hijsmaterieel.');
+                    cnt['sec-hoogte']++;
+                }
+            }
+
+            if (document.getElementById('chk-bewoond').checked) {
+                uitgangspunten.push('Pand is bewoond of in gebruik tijdens de uitvoering; rekening houden met toegankelijkheid en bewoners.');
+                cnt['sec-hoogte']++;
+            }
+            if (document.getElementById('chk-voorzieningen').checked) {
+                materieel.push('Voorzieningen voor stroom, water en aan-/afvoer op locatie meenemen.');
+                cnt['sec-hoogte']++;
+            }
+
+            const overigeHoogte = document.getElementById('overige-hoogte').value.trim();
+            if (overigeHoogte) {
+                materieel.push(overigeHoogte);
+                cnt['sec-hoogte']++;
+            }
+
+            // 3. WERKZAAMHEDEN & BEHANDELING
+            toggle('koppel-buiten', dBuiten);
+            toggle('koppel-binnen', dBinnen);
+            toggle('koppel-glas', dGlas);
+            toggle('koppel-timmer', dTimmer);
+            toggle('koppel-gevel', dGevel);
+
+            if (dBuiten) {
+                const delen = getChecked('buiten_deel');
+                if (delen.length > 0) {
+                    delen.forEach(d => {
+                        werkzaamheden.push(`Buitenschilderwerk ${d}.`);
+                        cnt['sec-werk']++;
+                    });
+                } else {
+                    werkzaamheden.push('Buitenschilderwerk.');
+                    cnt['sec-werk']++;
+                }
+
+                const cond = document.getElementById('buiten-conditie').value;
+                if (cond === 'goed') {
+                    behandeling.push('Reinigen, mat schuren, kleine reparaties en kitwerk bijwerken, voorlakken en aflakken.');
+                    cnt['sec-werk']++;
+                } else if (cond === 'matig') {
+                    behandeling.push('Reinigen, loszittende verflagen verwijderen/kaalhalen, herstel reparaties en kitwerk, gronden, voorlakken en aflakken.');
+                    cnt['sec-werk']++;
+                } else if (cond === 'slecht') {
+                    behandeling.push('Intensief schuren/afkrabben, kleine reparaties en kitwerk, en het aanbrengen van een nieuw 3-laags dekkend verfsysteem.');
+                    cnt['sec-werk']++;
+                }
+
+                if (document.getElementById('buiten-kleur').checked) {
+                    behandeling.push('Afwerken in een nader te bepalen kleurstelling / kleurwijziging inclusief benodigde tussenlagen.');
+                    cnt['sec-werk']++;
+                }
+                if (document.getElementById('buiten-kit').checked) {
+                    behandeling.push('Oude beglazingskit en openstaande naden uitsnijden, voorbereiden en opnieuw elastisch afkitten.');
+                    cnt['sec-werk']++;
+                }
+
+                const bHoutrot = document.getElementById('buiten-houtrot').checked;
+                toggle('koppeling-buiten-timmer', bHoutrot && !dTimmer);
+                if (bHoutrot && !dTimmer) {
+                    behandeling.push('Houtrotherstel opnemen en aangetaste delen voorbehandelen vóór het schilderen.');
+                    cnt['sec-werk']++;
+                }
+
+                const overigeBuiten = document.getElementById('overige-buiten').value.trim();
+                if (overigeBuiten) {
+                    behandeling.push(overigeBuiten);
+                    cnt['sec-werk']++;
+                }
+            }
+
+            if (dBinnen) {
+                const delen = getChecked('binnen_deel');
+                if (delen.length > 0) {
+                    delen.forEach(d => {
+                        werkzaamheden.push(`Binnen schilderwerk ${d}.`);
+                        cnt['sec-werk']++;
+                    });
+                } else {
+                    werkzaamheden.push('Binnen schilderwerk.');
+                    cnt['sec-werk']++;
+                }
+
+                const beh = document.getElementById('binnen-behandeling').value;
+                const kleurSel = document.getElementById('binnen-kleur').value;
+                let kleurTekst = 'in een nader te bepalen kleurstelling';
+                if (kleurSel === 'nader_licht') kleurTekst = 'in een nader te bepalen lichte kleurstelling';
+                else if (kleurSel === 'conform_opgave') kleurTekst = 'conform opgave';
+
+                if (beh === 'scan_verwijderen_nieuw') {
+                    behandeling.push(`Verwijderen van de bestaande scan, kleine reparaties en kitwerk, scan plakken (blokje), dekkend sausen ${kleurTekst}.`);
+                    cnt['sec-werk']++;
+                } else if (beh === 'bestaand_sausen') {
+                    behandeling.push(`Reinigen, kleine reparaties en kitwerk bijwerken en dekkend sausen ${kleurTekst}.`);
+                    cnt['sec-werk']++;
+                } else if (beh === 'nieuw_behang_sausen') {
+                    behandeling.push(`Ondergrond voorbereiden, behang/scan aanbrengen en dekkend sausen ${kleurTekst}.`);
+                    cnt['sec-werk']++;
+                } else if (kleurSel) {
+                    behandeling.push(`Afwerking uitvoeren ${kleurTekst}.`);
+                    cnt['sec-werk']++;
+                }
+
+                const ruimte = document.getElementById('binnen-staat-ruimte').value;
+                if (ruimte === 'gemeubileerd') {
+                    materieel.push('Volledig afdekken van vloeren, meubilair en aanwezige objecten in de ruimtes.');
+                    cnt['sec-werk']++;
+                }
+
+                const ond = document.getElementById('binnen-ondergrond').value;
+                if (ond === 'nieuwstuc') {
+                    behandeling.push('Voorstrijken van nieuw/zuigend stucwerk vóór de verdere afwerking.');
+                    cnt['sec-werk']++;
+                } else if (ond === 'vlekken') {
+                    behandeling.push('Aanbrengen van isolerende voorstrijk tegen doorslaan van vlekken, nicotine of vocht.');
+                    cnt['sec-werk']++;
+                }
+
+                if (document.getElementById('binnen-spuiten').checked) {
+                    behandeling.push('Dekkend aanbrengen van de muurverf/latex door middel van airless spuiten.');
+                    materieel.push('Rondom zorgvuldig afplakken en afdekken ten behoeve van airless spuitwerk.');
+                    cnt['sec-werk']++;
+                }
+
+                const overigeBinnen = document.getElementById('overige-binnen').value.trim();
+                if (overigeBinnen) {
+                    behandeling.push(overigeBinnen);
+                    cnt['sec-werk']++;
+                }
+            }
+
+            if (dGlas) {
+                const soorten = getChecked('glas_soort');
+                const aantal = document.getElementById('glas-aantal').value;
+                const aantalLabel = aantal ? ` (${aantal} ruiten)` : '';
+                if (soorten.length > 0) {
+                    werkzaamheden.push(`Glaszetten${aantalLabel}: leveren en plaatsen van ${soorten.join(', ')}.`);
+                } else {
+                    werkzaamheden.push(`Glaszetten${aantalLabel}.`);
+                }
+                cnt['sec-werk']++;
+
+                const zijde = document.getElementById('glas-zijde').value;
+                if (zijde === 'buiten') {
+                    behandeling.push('Beglazingswerkzaamheden uitvoeren vanaf de buitenzijde.');
+                    cnt['sec-werk']++;
+                } else if (zijde === 'binnen') {
+                    behandeling.push('Beglazingswerkzaamheden uitvoeren vanaf de binnenzijde.');
+                    cnt['sec-werk']++;
+                } else if (zijde === 'beide') {
+                    behandeling.push('Beglazingswerkzaamheden uitvoeren vanaf zowel binnen- als buitenzijde.');
+                    cnt['sec-werk']++;
+                }
+
+                if (document.getElementById('glas-triple').checked) {
+                    uitgangspunten.push('Bij triple glas (HR+++) sponningdiepte, glaslatten en draagkracht van hang- en sluitwerk controleren.');
+                    cnt['sec-werk']++;
+                }
+                if (document.getElementById('glas-brand').checked) {
+                    uitgangspunten.push('Brandwerend glas plaatsen volgens geldende eisen en gecertificeerd beglazingssysteem.');
+                    cnt['sec-werk']++;
+                }
+                if (document.getElementById('glas-roosters').checked) {
+                    werkzaamheden.push('Ventilatieroosters leveren, op maat afstemmen en monteren.');
+                    cnt['sec-werk']++;
+                }
+
+                const latten = document.getElementById('glas-latten').checked;
+                toggle('sub-glas-latten', latten);
+                if (latten) {
+                    behandeling.push('Nieuwe gegronde glas- en/of neuslatten op maat zagen, plaatsen en afkitten.');
+                    cnt['sec-werk']++;
+                    if (document.getElementById('glas-latten-lak').checked) {
+                        behandeling.push('Nieuwe glas- en/of neuslatten voorlakken en aflakken in de gewenste kleur.');
+                        cnt['sec-werk']++;
+                    }
+                }
+                if (document.getElementById('glas-zwaar').checked) {
+                    materieel.push('Inzet van glaskraan, vacuümzuiger en/of extra mankracht voor zware of grote ruiten.');
+                    cnt['sec-werk']++;
+                }
+                if (document.getElementById('glas-afvoer').checked) {
+                    materieel.push('Oude beglazing en vrijkomend verpakkingsmateriaal netjes afvoeren.');
+                    cnt['sec-werk']++;
+                }
+
+                const overigeGlas = document.getElementById('overige-glas').value.trim();
+                if (overigeGlas) {
+                    behandeling.push(overigeGlas);
+                    cnt['sec-werk']++;
+                }
+            }
+
+            if (dTimmer) {
+                const delen = getChecked('timmer_deel');
+                if (delen.length > 0) {
+                    delen.forEach(d => {
+                        werkzaamheden.push(`${d}.`);
+                        cnt['sec-werk']++;
+                    });
+                } else {
+                    werkzaamheden.push('Timmerwerk, houtrot en afbouw.');
+                    cnt['sec-werk']++;
+                }
+
+                const hRot = document.getElementById('timmer-houtrot').checked;
+                toggle('sub-timmer-houtrot', hRot);
+                if (hRot) {
+                    const aard = document.getElementById('houtrot-aard').value;
+                    if (aard === 'epoxy') {
+                        behandeling.push('Aangetast hout plaatselijk uitfrezen, behandelen en repareren met 2-componenten epoxy.');
+                        cnt['sec-werk']++;
+                    } else if (aard === 'deel') {
+                        behandeling.push('Ernstig aangetaste delen verwijderen en deelvervangen met passend hout, inclusief 2x gronden.');
+                        cnt['sec-werk']++;
+                    } else if (aard === 'stelpost') {
+                        uitgangspunten.push('Omvang van houtrotherstel definitief vaststellen na het openmaken en beoordelen van het houtwerk.');
+                        cnt['sec-werk']++;
+                    }
+                }
+                if (document.getElementById('timmer-afval').checked) {
+                    materieel.push('Verwijderen en afvoeren van vrijkomend sloop- en houtafval.');
+                    cnt['sec-werk']++;
+                }
+
+                const overigeTimmer = document.getElementById('overige-timmer').value.trim();
+                if (overigeTimmer) {
+                    behandeling.push(overigeTimmer);
+                    cnt['sec-werk']++;
+                }
+            }
+
+            if (dGevel) {
+                const delen = getChecked('gevel_deel');
+                if (delen.length > 0) {
+                    delen.forEach(d => {
+                        werkzaamheden.push(`${d}.`);
+                        cnt['sec-werk']++;
+                    });
+                } else {
+                    werkzaamheden.push('Gevelonderhoud, isolatie en verduurzaming.');
+                    cnt['sec-werk']++;
+                }
+                if (document.getElementById('gevel-vdk').checked) {
+                    werkzaamheden.push('Ventilatie-, WTW- (o.a. Climarad) of elektrotechnische werkzaamheden in afstemming met de VDK Groep.');
+                    cnt['sec-werk']++;
+                }
+                if (document.getElementById('gevel-asbest').checked) {
+                    uitgangspunten.push('Bij asbestverdacht plaatmateriaal vooraf inventarisatie en eventuele sanering door een gecertificeerd bedrijf afstemmen.');
+                    cnt['sec-werk']++;
+                }
+
+                const overigeGevel = document.getElementById('overige-gevel').value.trim();
+                if (overigeGevel) {
+                    behandeling.push(overigeGevel);
+                    cnt['sec-werk']++;
+                }
+            }
+
+            // 4. PLANNING & OVERIGE DETAILS
+            const ref = document.getElementById('project-ref').value.trim();
+            const planning = document.getElementById('planning-keuze').value;
+            const prijsRaw = document.getElementById('prijs-posten').value;
+            const overigeDetails = document.getElementById('overige-details').value.trim();
+
+            if (ref) {
+                uitgangspunten.push(`Projectreferentie: ${ref}.`);
+                cnt['sec-planning']++;
+            }
+            if (planning) {
+                uitgangspunten.push(`${planning}.`);
+                cnt['sec-planning']++;
+            }
+
+            const regels = prijsRaw
+                .split('\n')
+                .map(r => r.trim())
+                .filter(Boolean);
+            if (regels.length > 0) {
+                regels.forEach(omschrijving => {
+                    prijsPosten.push({ omschrijving, bedrag: '€Niet gerekend' });
+                    cnt['sec-planning']++;
+                });
+            }
+
+            if (overigeDetails) {
+                uitgangspunten.push(overigeDetails);
+                cnt['sec-planning']++;
+            }
+
+            koppelingen = {
+                werkzaamheden,
+                behandeling,
+                materieel,
+                uitgangspunten,
+                prijsPosten,
+                overigeTekst: overigeDetails,
+                perSectie: cnt
+            };
+
+            updateTellersEnOverzicht();
+        }
+
+        function updateTellersEnOverzicht() {
+            const { werkzaamheden, behandeling, materieel, uitgangspunten, prijsPosten, perSectie } = koppelingen;
+            const alleWerk = [...werkzaamheden, ...behandeling];
+            const totaal = alleWerk.length + materieel.length + uitgangspunten.length + prijsPosten.length;
+
+            Object.keys(perSectie).forEach(secId => {
+                const n = perSectie[secId];
+                const sub = document.getElementById('cnt-' + secId);
+                const meta = document.getElementById('meta-' + secId);
+                if (sub) sub.textContent = `${n} gekoppeld`;
+                if (meta) meta.textContent = `${n} gekoppeld`;
+            });
+
+            const koppSub = document.getElementById('cnt-sec-koppelingen');
+            if (koppSub) koppSub.textContent = `${totaal} gekoppeld`;
+
+            document.getElementById('btn-export-pdf').disabled = (totaal === 0);
+
+            const leegBox = document.getElementById('koppelingen-leeg');
+            const gevuldBox = document.getElementById('koppelingen-gevuld');
+            const submeta = document.getElementById('koppelingen-submeta');
+
+            if (totaal === 0) {
+                leegBox.classList.remove('hidden');
+                gevuldBox.classList.add('hidden');
+                submeta.textContent = '0 gekoppeld · start leeg';
+                return;
+            }
+
+            leegBox.classList.add('hidden');
+            gevuldBox.classList.remove('hidden');
+            submeta.textContent = `${totaal} gekoppeld (${alleWerk.length} werk/behandeling · ${materieel.length} steiger/materieel · ${prijsPosten.length} prijsregels · ${uitgangspunten.length} uitgangspunten/details)`;
+
+            vulUl('grp-werk', 'list-werk', alleWerk);
+            vulUl('grp-steiger', 'list-steiger', materieel);
+            vulPrijsPreview('grp-prijs', 'list-prijs', prijsPosten);
+            vulUl('grp-aandacht', 'list-aandacht', uitgangspunten);
+        }
+
+        function vulUl(grpId, ulId, items) {
+            const grp = document.getElementById(grpId);
+            const ul = document.getElementById(ulId);
+            grp.classList.toggle('hidden', items.length === 0);
+            ul.innerHTML = items.map(item => `<li>${item}</li>`).join('');
+        }
+
+        function vulPrijsPreview(grpId, boxId, posten) {
+            const grp = document.getElementById(grpId);
+            const box = document.getElementById(boxId);
+            grp.classList.toggle('hidden', posten.length === 0);
+            box.innerHTML = posten
+                .map(p => `<div class="prijs-regel-preview"><span>${p.omschrijving}</span><span>${p.bedrag}</span></div>`)
+                .join('');
+        }
+
+        function exporteerPDF() {
+            const { werkzaamheden, behandeling, materieel, uitgangspunten, prijsPosten, overigeTekst } = koppelingen;
+            if (werkzaamheden.length + behandeling.length + materieel.length + uitgangspunten.length + prijsPosten.length === 0) return;
+
+            const vandaag = new Date().toLocaleDateString('nl-NL', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            document.getElementById('pdf-datum').textContent = vandaag;
+
+            const klantNaam = document.getElementById('klant-naam').value.trim();
+            const klantContact = document.getElementById('klant-contact').value.trim();
+            const klantAdres = document.getElementById('klant-adres').value.trim();
+            const klantPlaats = document.getElementById('klant-plaats').value.trim();
+
+            const adresRegels = [
+                klantNaam ? `<strong>${klantNaam}</strong>` : '',
+                klantContact ? `t.a.v. ${klantContact}` : '',
+                klantAdres,
+                klantPlaats
+            ].filter(Boolean);
+            document.getElementById('pdf-adresblok').innerHTML = adresRegels.join('<br>');
+
+            const onderwerp = document.getElementById('onderwerp-project').value.trim();
+            const behandeldDoor = document.getElementById('behandeld-door').value.trim();
+
+            const onderwerpRegel = document.getElementById('pdf-onderwerp-regel');
+            if (onderwerp) {
+                onderwerpRegel.classList.remove('hidden');
+                document.getElementById('pdf-onderwerp-tekst').textContent = onderwerp;
+            } else {
+                onderwerpRegel.classList.add('hidden');
+            }
+
+            const behandeldRegel = document.getElementById('pdf-behandeld-regel');
+            if (behandeldDoor) {
+                behandeldRegel.classList.remove('hidden');
+                document.getElementById('pdf-behandeld-tekst').textContent = behandeldDoor;
+                document.getElementById('pdf-ondertekenaar').textContent = behandeldDoor;
+            } else {
+                behandeldRegel.classList.add('hidden');
+                document.getElementById('pdf-ondertekenaar').textContent = '';
+            }
+
+            document.getElementById('pdf-aanhef').textContent = klantContact
+                ? `Geachte ${klantContact},`
+                : 'Geachte heer / mevrouw,';
+
+            const alleUitgangspunten = [...uitgangspunten, ...materieel];
+            vulPdfSec('pdf-sec-uitgangspunten', 'pdf-list-uitgangspunten', alleUitgangspunten);
+            vulPdfSec('pdf-sec-werkzaamheden', 'pdf-list-werkzaamheden', werkzaamheden);
+            vulPdfSec('pdf-sec-behandeling', 'pdf-list-behandeling', behandeling);
+
+            const overigeSec = document.getElementById('pdf-sec-overige');
+            if (overigeTekst) {
+                overigeSec.classList.remove('hidden');
+                document.getElementById('pdf-overige-tekst').textContent = overigeTekst;
+            } else {
+                overigeSec.classList.add('hidden');
+            }
+
+            const prijsBox = document.getElementById('pdf-prijs-regels');
+            if (prijsPosten.length > 0) {
+                prijsBox.innerHTML = prijsPosten
+                    .map(p => `<div class="pdf-prijs-row"><span>${p.omschrijving}</span><span>${p.bedrag}</span></div>`)
+                    .join('');
+            } else {
+                const prijsOmschrijving = werkzaamheden.length > 0
+                    ? werkzaamheden.map(w => w.replace(/\.$/, '')).join(' · ')
+                    : 'Omschreven werkzaamheden';
+                prijsBox.innerHTML = `<div class="pdf-prijs-row"><span>${prijsOmschrijving}</span><span>€Niet gerekend</span></div>`;
+            }
+
+            window.print();
+        }
+
+        function vulPdfSec(secId, ulId, items) {
+            const sec = document.getElementById(secId);
+            const ul = document.getElementById(ulId);
+            sec.classList.toggle('hidden', items.length === 0);
+            ul.innerHTML = items.map(item => `<li>${item}</li>`).join('');
+        }
+
+        function opnieuwBeginnen() {
+            document.getElementById('offerte-form').reset();
+            verwerkAlles();
+            selectSectie('sec-basis');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        verwerkAlles();
+    </script>
+</body>
+</html>
+```[cite: 1]
+
+Wil je dat ik hierna ook het knopje/veld toevoeg om vaste bedrijfsdocumenten (zoals een PDF of voorwaardenbestand op GitHub) direct aan de offerte te koppelen?
