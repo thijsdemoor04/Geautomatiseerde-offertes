@@ -90,7 +90,6 @@
             background: var(--bg-surface);
         }
 
-        /* Tab-balk: Overzicht + Eventuele extra invullingen */
         .tab-bar {
             display: flex;
             align-items: stretch;
@@ -243,11 +242,6 @@
             outline: none;
         }
 
-        input[readonly] {
-            background-color: #e2e0db;
-            font-weight: 600;
-        }
-
         input:focus,
         select:focus,
         textarea:focus {
@@ -330,17 +324,13 @@
 
         .extra-row-grid {
             display: grid;
-            grid-template-columns: 2fr 0.8fr 0.8fr 0.8fr 1fr auto;
+            grid-template-columns: 2fr 1fr auto;
             gap: 10px;
             align-items: end;
         }
 
-        .extra-row-subgrid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1.6fr;
-            gap: 10px;
+        .extra-row-note {
             margin-top: 10px;
-            align-items: end;
         }
 
         .results-panel {
@@ -420,13 +410,6 @@
             flex-wrap: wrap;
         }
 
-        .export-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
         .btn-secondary {
             appearance: none;
             background: transparent;
@@ -441,12 +424,6 @@
 
         .btn-secondary:hover:not(:disabled) {
             background-color: rgba(0, 0, 0, 0.05);
-        }
-
-        .btn-secondary:disabled {
-            border-color: #9e9d99;
-            color: #9e9d99;
-            cursor: not-allowed;
         }
 
         .btn-primary {
@@ -476,13 +453,8 @@
             display: none !important;
         }
 
-        #pdf-sheet {
-            display: none;
-        }
-
         @media (max-width: 900px) {
-            .extra-row-grid,
-            .extra-row-subgrid {
+            .extra-row-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -507,64 +479,6 @@
                 grid-template-columns: 1fr;
             }
         }
-
-        @media print {
-            body {
-                background: #ffffff !important;
-                color: #000000 !important;
-                margin: 0;
-                padding: 0;
-                font-family: var(--font-sans);
-                font-size: 11.5pt;
-                line-height: 1.42;
-            }
-            #app-shell {
-                display: none !important;
-            }
-            #pdf-sheet {
-                display: block !important;
-            }
-            @page {
-                size: A4;
-                margin: 15mm 16mm;
-            }
-            .pdf-sec {
-                break-inside: avoid;
-                page-break-inside: avoid;
-                margin-top: 14px;
-            }
-            .pdf-h2 {
-                font-family: var(--font-serif);
-                font-size: 13.5pt;
-                font-weight: 700;
-                margin: 0 0 5px 0;
-                color: #000000;
-            }
-            .pdf-list {
-                margin: 0;
-                padding-left: 18px;
-            }
-            .pdf-list li {
-                margin-bottom: 3px;
-            }
-            .pdf-prijs-row {
-                display: flex;
-                justify-content: space-between;
-                gap: 24px;
-                border-bottom: 1px solid #999;
-                padding: 4px 0;
-            }
-            .pdf-offerte-prijs-row {
-                display: flex;
-                justify-content: space-between;
-                gap: 24px;
-                border-top: 1.5px solid #000;
-                border-bottom: 1.5px solid #000;
-                padding: 6px 0;
-                margin-top: 8px;
-                font-weight: 700;
-            }
-        }
     </style>
 </head>
 <body>
@@ -577,7 +491,7 @@
             <h1 class="doc-title">Offerte Vragenlijst<br>Totaalonderhoud &amp; Opname</h1>
             <div class="brand-mark">
                 <img src="./PlenderWestendorp_app-icoon_512.png" alt="PlenderWestendorp logo" class="brand-logo">
-                <span>PlenderWestendorp · v2.1</span>
+                <span>PlenderWestendorp · v2.2</span>
             </div>
         </header>
 
@@ -619,7 +533,7 @@
                 <!-- RECHTER WERKBLAD -->
                 <main class="main-pane" id="overzicht-pane">
 
-                    <!-- WEERGAVE 1: OVERZICHT (STANDAARD OFFERTE-VRAGENLIJST) -->
+                    <!-- WEERGAVE 1: OVERZICHT -->
                     <div id="pane-overzicht">
 
                         <!-- SECTIE 1: OPDRACHT & PAND -->
@@ -1183,7 +1097,7 @@
 
                             <div class="question-block">
                                 <label class="field-label" for="offerte-prijs">Offerte prijs (optioneel)</label>
-                                <span class="field-hint">Wordt onderaan de prijsaanbieding in het overzicht, de PDF en het Word-document getoond.</span>
+                                <span class="field-hint">Wordt onderaan de prijsaanbieding in het overzicht en het Word-document getoond.</span>
                                 <input type="text" id="offerte-prijs" oninput="verwerkAlles()" placeholder="">
                             </div>
 
@@ -1226,31 +1140,24 @@
 
                     </div>
 
-                    <!-- WEERGAVE 2: EVENTUELE EXTRA INVULLINGEN (OPTIONEEL) -->
+                    <!-- WEERGAVE 2: EVENTUELE EXTRA INVULLINGEN -->
                     <div id="pane-extra" class="hidden">
                         <h2 class="pane-heading">Eventuele extra invullingen</h2>
-                        <div class="pane-meta">Optionele aanvulling voor deze offerte. Staat standaard uit en wordt pas meegenomen in de offerte wanneer je het hier activeert en invult.</div>
+                        <div class="pane-meta">Optionele m²-regels en opmerkingen. Staat standaard uit; opmerkingen gaan naar het Overzicht.</div>
 
                         <div class="question-block">
                             <label class="choice-row">
                                 <input type="checkbox" id="chk-extra-calculatie" onchange="verwerkAlles()">
-                                <span>Extra meet- en calculatieregels / opties koppelen aan deze offerte</span>
+                                <span>Extra m²-regels gebruiken voor deze offerte</span>
                             </label>
-                            <span class="field-hint">Gebruik dit alleen wanneer je aanvullende maten, aantallen, stelposten of opties wilt toevoegen naast de vragenlijst.</span>
                         </div>
 
                         <div id="extra-calculatie-box" class="linked-box hidden">
                             <div class="linked-title">Optionele opname- &amp; calculatieregels</div>
 
-                            <div class="form-grid-2">
-                                <div>
-                                    <label class="field-label" for="extra-uurtarief">Eventueel uurtarief (€, optioneel)</label>
-                                    <input type="number" step="0.50" id="extra-uurtarief" oninput="verwerkAlles()" placeholder="">
-                                </div>
-                                <div>
-                                    <label class="field-label" for="extra-opslag">Eventuele opslag (%, optioneel)</label>
-                                    <input type="number" step="1" id="extra-opslag" oninput="verwerkAlles()" placeholder="">
-                                </div>
+                            <div style="max-width:340px;">
+                                <label class="field-label" for="extra-uurtarief">Eventueel uurtarief (€, optioneel)</label>
+                                <input type="number" step="0.50" id="extra-uurtarief" oninput="verwerkAlles()" placeholder="">
                             </div>
 
                             <div id="extra-regels-lijst"></div>
@@ -1259,13 +1166,10 @@
                         </div>
                     </div>
 
-                    <!-- ONDERIN: OPNIEUW BEGINNEN, DOWNLOAD WORD (.DOCX) & EXPORTEREN ALS PDF -->
+                    <!-- ONDERIN: OPNIEUW BEGINNEN & DOWNLOAD WORD (.DOCX) -->
                     <div class="bottom-bar">
                         <button type="button" class="btn-secondary" onclick="opnieuwBeginnen()">Opnieuw beginnen</button>
-                        <div class="export-actions">
-                            <button type="button" id="btn-export-docx" class="btn-secondary" onclick="exporteerWord()" disabled>Download Word (.docx)</button>
-                            <button type="button" id="btn-export-pdf" class="btn-primary" onclick="exporteerPDF()" disabled>Exporteren als PDF</button>
-                        </div>
+                        <button type="button" id="btn-export-docx" class="btn-primary" onclick="exporteerWord()" disabled>Download Word (.docx)</button>
                     </div>
 
                 </main>
@@ -1273,96 +1177,17 @@
         </form>
     </div>
 
-    <!-- PDF-DOCUMENT -->
-    <div id="pdf-sheet">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 18px;">
-            <div id="pdf-adresblok" style="min-height: 60px;"></div>
-            <div style="text-align: right; white-space: nowrap;" id="pdf-plaats-datum"></div>
-        </div>
-
-        <div style="margin-bottom: 16px;">
-            <div id="pdf-onderwerp-regel" style="display: flex; gap: 14px; margin-bottom: 4px;">
-                <span style="min-width: 120px;">Onderwerp</span>
-                <span>:</span>
-                <span id="pdf-onderwerp-tekst" style="font-weight: 600;"></span>
-            </div>
-            <div id="pdf-behandeld-regel" style="display: flex; gap: 14px;">
-                <span style="min-width: 120px;">Behandeld door</span>
-                <span>:</span>
-                <span id="pdf-behandeld-tekst"></span>
-            </div>
-        </div>
-
-        <p id="pdf-aanhef" style="margin: 0 0 10px 0;"></p>
-        <p style="margin: 0 0 14px 0;">Hierbij ontvangt u onze offerte voor het bovengenoemde project. De offerte is tot stand gekomen op basis van de volgende uitgangspunten:</p>
-
-        <div class="pdf-sec" id="pdf-sec-uitgangspunten">
-            <h2 class="pdf-h2">Uitgangspunten</h2>
-            <ul class="pdf-list" id="pdf-list-uitgangspunten"></ul>
-        </div>
-
-        <div class="pdf-sec" id="pdf-sec-werkzaamheden">
-            <h2 class="pdf-h2">Werkzaamheden</h2>
-            <ul class="pdf-list" id="pdf-list-werkzaamheden"></ul>
-        </div>
-
-        <div class="pdf-sec" id="pdf-sec-behandeling">
-            <h2 class="pdf-h2">Behandeling</h2>
-            <ul class="pdf-list" id="pdf-list-behandeling"></ul>
-        </div>
-
-        <div class="pdf-sec hidden" id="pdf-sec-overige">
-            <h2 class="pdf-h2">Overige details</h2>
-            <p id="pdf-overige-tekst" style="margin: 0; white-space: pre-line;"></p>
-        </div>
-
-        <div class="pdf-sec" id="pdf-sec-prijs">
-            <h2 class="pdf-h2">Prijsaanbieding</h2>
-            <p style="margin: 0 0 8px 0;">De beschreven werkzaamheden in de offerte kunnen wij aanbieden voor:</p>
-            <div id="pdf-prijs-regels" style="max-width: 520px;"></div>
-            <div id="pdf-offerte-prijs-regel" class="pdf-offerte-prijs-row hidden" style="max-width: 520px;">
-                <span>Offerte prijs</span>
-                <span id="pdf-offerte-prijs-waarde"></span>
-            </div>
-            <p style="margin: 10px 0 0 0; font-size: 10.5pt; color: #333;">Overige niet benoemde werkzaamheden vallen buiten deze opgave.</p>
-        </div>
-
-        <div class="pdf-sec">
-            <h2 class="pdf-h2">Algemene voorwaarden en condities</h2>
-            <p style="margin: 0 0 6px 0;">De prijzen zijn gebaseerd op de huidige loon- en materiaalkosten. Onze prijzen staan vast tot 3 maanden na offertedatum. Na deze datum kunnen wijzigingen worden doorberekend.</p>
-            <p style="margin: 0 0 6px 0;">Facturatie per e-mail naar rato uitgevoerde werkzaamheden.</p>
-            <p style="margin: 0;">Betalingen binnen 14 dagen na factuurdatum.</p>
-        </div>
-
-        <div class="pdf-sec" style="margin-top: 18px;">
-            <p style="margin: 0 0 18px 0;">Vertrouwende u hiermee een passende aanbieding te hebben gedaan. Bij akkoord ontvangen wij graag een getekend exemplaar retour.</p>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 36px;">
-                <div>
-                    <div style="margin-bottom: 24px;">Met vriendelijke groet,</div>
-                    <div style="font-weight: 700;">Plenderwestendorp</div>
-                    <div id="pdf-ondertekenaar">Ingevuld door ………</div>
-                </div>
-                <div>
-                    <div style="margin-bottom: 24px;">Handtekening:</div>
-                    <div style="border-bottom: 1px solid #000; margin-bottom: 14px; height: 22px;"></div>
-                    <div>Datum: ........................................</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         const WORKER_URL = 'https://plender-offerte-docx.thijsdemoor.workers.dev/';
 
         const EXTRA_POSTEN = [
-            { code: 'SB02', omschrijving: 'Wanden sauzen', eenheid: 'm²', normUur: 0.12, materiaal: 1.1 },
-            { code: 'SB03', omschrijving: 'Plafonds sauzen', eenheid: 'm²', normUur: 0.15, materiaal: 1.1 },
-            { code: 'SB05', omschrijving: 'Kozijnen binnen schilderen', eenheid: 'm¹', normUur: 0.25, materiaal: 0.9 },
-            { code: 'SB07', omschrijving: 'Deur schilderen, per zijde', eenheid: 'st', normUur: 1.5, materiaal: 6.0 },
-            { code: 'W06', omschrijving: 'Vliesbehang aanbrengen', eenheid: 'm²', normUur: 0.2, materiaal: 4.5 },
-            { code: 'G01', omschrijving: 'HR++ glas plaatsen', eenheid: 'm²', normUur: 0.4, materiaal: 0 },
-            { code: 'A12', omschrijving: 'Stucwerk wanden', eenheid: 'm²', normUur: 0.3, materiaal: 2.5 },
-            { code: 'SU10', omschrijving: 'Gevel reinigen', eenheid: 'm²', normUur: 0.1, materiaal: 0.5 }
+            { code: 'SB02', omschrijving: 'Wanden sauzen', normUur: 0.12, materiaal: 1.1 },
+            { code: 'SB03', omschrijving: 'Plafonds sauzen', normUur: 0.15, materiaal: 1.1 },
+            { code: 'SB08', omschrijving: 'Gevelbetimmering schilderen', normUur: 0.25, materiaal: 1.2 },
+            { code: 'SU10', omschrijving: 'Gevel reinigen', normUur: 0.1, materiaal: 0.5 },
+            { code: 'W06', omschrijving: 'Vliesbehang aanbrengen', normUur: 0.2, materiaal: 4.5 },
+            { code: 'G01', omschrijving: 'HR++ glas plaatsen', normUur: 0.4, materiaal: 0 },
+            { code: 'A12', omschrijving: 'Stucwerk wanden', normUur: 0.3, materiaal: 2.5 }
         ];
 
         let extraRegels = [];
@@ -1455,13 +1280,8 @@
 
         function voegExtraRegelToe() {
             extraRegels.push({
-                ruimte: '',
                 postCode: 'SB02',
-                aantal: 1,
-                lengte: '',
-                hoogte: '',
-                aftrek: 0,
-                soort: 'In de prijs',
+                m2: '',
                 opmerking: ''
             });
             renderExtraRegels();
@@ -1483,27 +1303,13 @@
 
         function berekenExtraRegel(rg) {
             const post = EXTRA_POSTEN.find(p => p.code === rg.postCode) || EXTRA_POSTEN[0];
-            const aantal = numVal(rg.aantal) || 1;
-            const lengte = numVal(rg.lengte);
-            const hoogte = numVal(rg.hoogte);
-            const aftrek = numVal(rg.aftrek);
-
-            let h = aantal;
-            if (post.eenheid === 'm²') {
-                if (lengte > 0 && hoogte > 0) h = Math.max(0, aantal * lengte * hoogte - aftrek);
-                else if (lengte > 0) h = Math.max(0, aantal * lengte - aftrek);
-            } else if (post.eenheid === 'm¹' && lengte > 0) {
-                h = Math.max(0, aantal * lengte - aftrek);
-            }
-
+            const m2 = numVal(rg.m2);
             const uurtarief = numVal(document.getElementById('extra-uurtarief').value);
-            const opslagPct = numVal(document.getElementById('extra-opslag').value);
-            const uren = h * post.normUur;
-            const bedrag = (uurtarief > 0 || post.materiaal > 0)
-                ? (uren * uurtarief) + (h * post.materiaal * (1 + opslagPct / 100))
+            const uren = m2 * post.normUur;
+            const bedrag = (m2 > 0 && (uurtarief > 0 || post.materiaal > 0))
+                ? (uren * uurtarief) + (m2 * post.materiaal)
                 : 0;
-
-            return { post, hoeveelheid: h, uren, bedrag };
+            return { post, m2, uren, bedrag };
         }
 
         function renderExtraRegels() {
@@ -1512,7 +1318,7 @@
             box.innerHTML = extraRegels.map((rg, idx) => {
                 const calc = berekenExtraRegel(rg);
                 const opts = EXTRA_POSTEN.map(p =>
-                    `<option value="${p.code}" ${rg.postCode === p.code ? 'selected' : ''}>${p.omschrijving} (${p.eenheid})</option>`
+                    `<option value="${p.code}" ${rg.postCode === p.code ? 'selected' : ''}>${p.omschrijving} (m²)</option>`
                 ).join('');
 
                 return `
@@ -1523,42 +1329,16 @@
                                 <select onchange="updateExtraRegel(${idx}, 'postCode', this.value)">${opts}</select>
                             </div>
                             <div>
-                                <label class="field-label">Aantal</label>
-                                <input type="number" step="0.1" value="${rg.aantal}" oninput="updateExtraRegel(${idx}, 'aantal', this.value)">
-                            </div>
-                            <div>
-                                <label class="field-label">Lengte (m)</label>
-                                <input type="number" step="0.1" value="${rg.lengte}" oninput="updateExtraRegel(${idx}, 'lengte', this.value)">
-                            </div>
-                            <div>
-                                <label class="field-label">Hoogte (m)</label>
-                                <input type="number" step="0.1" value="${rg.hoogte}" oninput="updateExtraRegel(${idx}, 'hoogte', this.value)">
-                            </div>
-                            <div>
-                                <label class="field-label">Hoeveelheid</label>
-                                <input type="text" readonly value="${calc.hoeveelheid.toFixed(2).replace('.', ',')} ${calc.post.eenheid}">
+                                <label class="field-label">m²</label>
+                                <input type="number" step="0.1" value="${rg.m2}" oninput="updateExtraRegel(${idx}, 'm2', this.value)">
                             </div>
                             <div>
                                 <button type="button" class="btn-secondary" style="padding:8px 12px;" onclick="verwijderExtraRegel(${idx})">×</button>
                             </div>
                         </div>
-                        <div class="extra-row-subgrid">
-                            <div>
-                                <label class="field-label">Ruimte / onderdeel (optioneel)</label>
-                                <input type="text" value="${rg.ruimte || ''}" placeholder="" oninput="updateExtraRegel(${idx}, 'ruimte', this.value)">
-                            </div>
-                            <div>
-                                <label class="field-label">Soort regel</label>
-                                <select onchange="updateExtraRegel(${idx}, 'soort', this.value)">
-                                    <option value="In de prijs" ${rg.soort === 'In de prijs' ? 'selected' : ''}>In de prijs</option>
-                                    <option value="Stelpost" ${rg.soort === 'Stelpost' ? 'selected' : ''}>Stelpost</option>
-                                    <option value="Optie / meerwerk" ${rg.soort === 'Optie / meerwerk' ? 'selected' : ''}>Optie / meerwerk</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="field-label">Opmerking (optioneel)</label>
-                                <input type="text" value="${rg.opmerking || ''}" placeholder="" oninput="updateExtraRegel(${idx}, 'opmerking', this.value)">
-                            </div>
+                        <div class="extra-row-note">
+                            <label class="field-label">Opmerking (optioneel, gaat naar Overzicht)</label>
+                            <input type="text" value="${rg.opmerking || ''}" placeholder="" oninput="updateExtraRegel(${idx}, 'opmerking', this.value)">
                         </div>
                     </div>
                 `;
@@ -1962,32 +1742,24 @@
                 cnt['sec-planning']++;
             }
 
-            // OPTIONALE EXTRA INVULLINGEN (ALLEEN WANNEER AANGEVINKT)
+            // OPTIONALE M²-REGELS (ALLEEN WANNEER AANGEVINKT; OPMERKING NAAR OVERZICHT)
             const extraActief = document.getElementById('chk-extra-calculatie').checked;
             toggle('extra-calculatie-box', extraActief);
 
             if (extraActief && extraRegels.length > 0) {
                 extraRegels.forEach(rg => {
                     const calc = berekenExtraRegel(rg);
-                    const prefix = rg.ruimte ? `${rg.ruimte}: ` : '';
-                    const omschrijving = `${prefix}${calc.post.omschrijving} (${calc.hoeveelheid.toFixed(2).replace('.', ',')} ${calc.post.eenheid})`;
+                    const m2Label = calc.m2 > 0 ? `${calc.m2.toFixed(2).replace('.', ',')} m²` : 'm²';
+                    const omschrijving = `${calc.post.omschrijving} (${m2Label})`;
+                    const bedragTekst = calc.bedrag > 0 ? fmtEuro(calc.bedrag) : '€Niet gerekend';
 
-                    if (rg.soort === 'Optie / meerwerk') {
-                        uitgangspunten.push(`Optie / meerwerk — ${omschrijving}${rg.opmerking ? ': ' + rg.opmerking : ''}.`);
-                    } else if (rg.soort === 'Stelpost') {
-                        prijsPosten.push({
-                            omschrijving: `Stelpost · ${omschrijving}`,
-                            bedrag: calc.bedrag > 0 ? fmtEuro(calc.bedrag) : '€Niet gerekend'
-                        });
-                    } else {
-                        prijsPosten.push({
-                            omschrijving,
-                            bedrag: calc.bedrag > 0 ? fmtEuro(calc.bedrag) : '€Niet gerekend'
-                        });
+                    if (calc.m2 > 0 || rg.opmerking) {
+                        werkzaamheden.push(`${omschrijving}.`);
+                        prijsPosten.push({ omschrijving, bedrag: bedragTekst });
                     }
-
-                    if (rg.opmerking && rg.soort !== 'Optie / meerwerk') {
-                        behandeling.push(`${rg.ruimte ? rg.ruimte + ': ' : ''}${rg.opmerking}.`);
+                    const opm = (rg.opmerking || '').trim();
+                    if (opm && !uitgangspunten.includes(opm)) {
+                        uitgangspunten.push(opm);
                     }
                 });
             }
@@ -2024,7 +1796,6 @@
             if (koppSub) koppSub.textContent = `${totaal} gekoppeld`;
 
             document.getElementById('btn-export-docx').disabled = (totaal === 0);
-            document.getElementById('btn-export-pdf').disabled = (totaal === 0);
 
             const leegBox = document.getElementById('koppelingen-leeg');
             const gevuldBox = document.getElementById('koppelingen-gevuld');
@@ -2173,87 +1944,6 @@
                     btn.textContent = 'Download Word (.docx)';
                 }
             }
-        }
-
-        function exporteerPDF() {
-            const { werkzaamheden, behandeling, materieel, uitgangspunten, prijsPosten, offertePrijs, overigeTekst } = koppelingen;
-            const prijsCount = prijsPosten.length + (offertePrijs ? 1 : 0);
-            if (werkzaamheden.length + behandeling.length + materieel.length + uitgangspunten.length + prijsCount === 0) return;
-
-            const basis = bouwOfferteBasisGegevens();
-            document.getElementById('pdf-plaats-datum').textContent = basis.plaatsDatum;
-
-            const adresRegels = [
-                basis.klantNaam ? `<strong>${basis.klantNaam}</strong>` : '',
-                basis.klantContact ? `t.a.v. ${basis.klantContact}` : '',
-                basis.klantAdres,
-                basis.klantPlaats
-            ].filter(Boolean);
-            document.getElementById('pdf-adresblok').innerHTML = adresRegels.join('<br>');
-
-            const onderwerpRegel = document.getElementById('pdf-onderwerp-regel');
-            if (basis.onderwerp) {
-                onderwerpRegel.classList.remove('hidden');
-                document.getElementById('pdf-onderwerp-tekst').textContent = basis.onderwerp;
-            } else {
-                onderwerpRegel.classList.add('hidden');
-            }
-
-            const behandeldRegel = document.getElementById('pdf-behandeld-regel');
-            if (basis.behandeldDoor) {
-                behandeldRegel.classList.remove('hidden');
-                document.getElementById('pdf-behandeld-tekst').textContent = basis.behandeldDoor;
-                document.getElementById('pdf-ondertekenaar').textContent = `Ingevuld door ${basis.behandeldDoor}`;
-            } else {
-                behandeldRegel.classList.add('hidden');
-                document.getElementById('pdf-ondertekenaar').textContent = 'Ingevuld door ………';
-            }
-
-            document.getElementById('pdf-aanhef').textContent = basis.aanhef;
-
-            const alleUitgangspunten = [...uitgangspunten, ...materieel];
-            vulPdfSec('pdf-sec-uitgangspunten', 'pdf-list-uitgangspunten', alleUitgangspunten);
-            vulPdfSec('pdf-sec-werkzaamheden', 'pdf-list-werkzaamheden', werkzaamheden);
-            vulPdfSec('pdf-sec-behandeling', 'pdf-list-behandeling', behandeling);
-
-            const overigeSec = document.getElementById('pdf-sec-overige');
-            if (overigeTekst) {
-                overigeSec.classList.remove('hidden');
-                document.getElementById('pdf-overige-tekst').textContent = overigeTekst;
-            } else {
-                overigeSec.classList.add('hidden');
-            }
-
-            const prijsBox = document.getElementById('pdf-prijs-regels');
-            if (prijsPosten.length > 0) {
-                prijsBox.innerHTML = prijsPosten
-                    .map(p => `<div class="pdf-prijs-row"><span>${p.omschrijving}</span><span>${p.bedrag}</span></div>`)
-                    .join('');
-            } else {
-                const prijsOmschrijving = werkzaamheden.length > 0
-                    ? werkzaamheden.map(w => w.replace(/\.$/, '')).join(' · ')
-                    : 'Omschreven werkzaamheden';
-                prijsBox.innerHTML = `<div class="pdf-prijs-row"><span>${prijsOmschrijving}</span><span>€Niet gerekend</span></div>`;
-            }
-
-            const offertePrijsRegel = document.getElementById('pdf-offerte-prijs-regel');
-            const offertePrijsWaarde = document.getElementById('pdf-offerte-prijs-waarde');
-            if (offertePrijs) {
-                offertePrijsRegel.classList.remove('hidden');
-                offertePrijsWaarde.textContent = offertePrijs;
-            } else {
-                offertePrijsRegel.classList.add('hidden');
-                offertePrijsWaarde.textContent = '';
-            }
-
-            window.print();
-        }
-
-        function vulPdfSec(secId, ulId, items) {
-            const sec = document.getElementById(secId);
-            const ul = document.getElementById(ulId);
-            sec.classList.toggle('hidden', items.length === 0);
-            ul.innerHTML = items.map(item => `<li>${item}</li>`).join('');
         }
 
         function opnieuwBeginnen() {
