@@ -1,37 +1,33 @@
-const CACHE_NAME = 'pw-offerte-versie-4';
+const CACHE_NAME = 'pw-offerte-versie-5';
 
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
-  './PlenderWestendorp_app-icoon_512.png'
+  './PlenderWestendorp_app-icoon_512.png',
+  './Offerte_voor%20html.docx'
 ];
 
-// Installeren: sla de app-bestanden op in de cache
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS_TO_CACHE))
   );
   self.skipWaiting();
 });
 
-// Activeren: verwijder oude caches automatisch bij een versiewijziging
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keys => {
-      return Promise.all(
+    caches.keys().then(keys =>
+      Promise.all(
         keys
           .filter(key => key !== CACHE_NAME)
           .map(key => caches.delete(key))
-      );
-    })
+      )
+    )
   );
   self.clients.claim();
 });
 
-// Ophalen: probeer eerst het netwerk (zodat updates snel doorkomen), val terug op cache bij slecht bereik
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
