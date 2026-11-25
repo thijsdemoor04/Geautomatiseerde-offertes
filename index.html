@@ -518,14 +518,14 @@
             <h1 class="doc-title">Offerte Vragenlijst<br>Totaalonderhoud &amp; Opname</h1>
             <div class="brand-mark">
                 <img src="./PlenderWestendorp_app-icoon_512.png" alt="PlenderWestendorp logo" class="brand-logo">
-                <span>PlenderWestendorp · v2.4</span>
+                <span>PlenderWestendorp · v2.5</span>
             </div>
         </header>
 
-        <!-- Tab-balk: Overzicht + Eventuele extra invullingen -->
+        <!-- Tab-balk: Overzicht + Eventuele extra opvulling -->
         <nav class="tab-bar" aria-label="Hoofdonderdelen">
             <button type="button" id="tab-overzicht" class="tab-btn active" onclick="switchHoofdTab('overzicht')">Overzicht</button>
-            <button type="button" id="tab-extra" class="tab-btn" onclick="switchHoofdTab('extra')">Eventuele extra invullingen</button>
+            <button type="button" id="tab-extra" class="tab-btn" onclick="switchHoofdTab('extra')">Eventuele extra opvulling</button>
         </nav>
 
         <form id="offerte-form" onsubmit="return false;">
@@ -1128,6 +1128,23 @@
                                 <input type="text" id="offerte-prijs" required oninput="verwerkAlles()" placeholder="">
                             </div>
 
+                            <!-- DIRECT IN HET OVERZICHT: EVENTUELE EXTRA OPVULLING (OPTIONEEL) -->
+                            <div class="question-block" id="overzicht-extra-opvulling">
+                                <div class="linked-box" style="margin-top:0;">
+                                    <div class="linked-title">Eventuele extra opvulling (optioneel)</div>
+                                    <span class="field-hint">Staat direct klaar en wordt alleen meegenomen als je een m²-aantal of opmerking invult.</span>
+
+                                    <div style="max-width:340px; margin-bottom:10px;">
+                                        <label class="field-label" for="extra-uurtarief">Eventueel uurtarief (€, optioneel)</label>
+                                        <input type="number" step="0.50" id="extra-uurtarief" oninput="verwerkAlles()" placeholder="">
+                                    </div>
+
+                                    <div id="extra-regels-lijst"></div>
+
+                                    <button type="button" class="action-link-btn" onclick="voegExtraRegelToe()">+ Extra regel toevoegen</button>
+                                </div>
+                            </div>
+
                             <div class="question-block">
                                 <label class="field-label" for="overige-details">Overige details (optioneel)</label>
                                 <span class="field-hint">Aanvullende beschrijving van wat er gebeurt, maten, uitzonderingen of afspraken op de offerte.</span>
@@ -1171,27 +1188,18 @@
 
                     </div>
 
-                    <!-- WEERGAVE 2: EVENTUELE EXTRA INVULLINGEN -->
+                    <!-- WEERGAVE 2: EVENTUELE EXTRA OPVULLING (LOSSE TAB) -->
                     <div id="pane-extra" class="hidden">
-                        <h2 class="pane-heading">Eventuele extra invullingen</h2>
-                        <div class="pane-meta">Optionele m²-regels en opmerkingen. Staat standaard uit; opmerkingen gaan naar het Overzicht.</div>
+                        <h2 class="pane-heading">Eventuele extra opvulling</h2>
+                        <div class="pane-meta">Optionele m²-regels en opmerkingen. Staat direct klaar en wordt alleen verwerkt als je iets invult.</div>
 
                         <div class="question-block">
-                            <label class="choice-row">
-                                <input type="checkbox" id="chk-extra-calculatie" onchange="verwerkAlles()">
-                                <span>Extra m²-regels gebruiken voor deze offerte</span>
-                            </label>
-                        </div>
-
-                        <div id="extra-calculatie-box" class="linked-box hidden">
-                            <div class="linked-title">Optionele opname- &amp; calculatieregels</div>
-
-                            <div style="max-width:340px;">
-                                <label class="field-label" for="extra-uurtarief">Eventueel uurtarief (€, optioneel)</label>
-                                <input type="number" step="0.50" id="extra-uurtarief" oninput="verwerkAlles()" placeholder="">
+                            <div style="max-width:340px; margin-bottom:10px;">
+                                <label class="field-label" for="extra-uurtarief-tab">Eventueel uurtarief (€, optioneel)</label>
+                                <input type="number" step="0.50" id="extra-uurtarief-tab" oninput="syncUurtarief(this.value)" placeholder="">
                             </div>
 
-                            <div id="extra-regels-lijst"></div>
+                            <div id="extra-regels-lijst-tab"></div>
 
                             <button type="button" class="action-link-btn" onclick="voegExtraRegelToe()">+ Extra regel toevoegen</button>
                         </div>
@@ -1221,7 +1229,11 @@
             { code: 'A12', omschrijving: 'Stucwerk wanden', normUur: 0.3, materiaal: 2.5 }
         ];
 
-        let extraRegels = [];
+        function maakStandaardExtraRegels() {
+            return [{ postCode: 'SB02', m2: '', opmerking: '' }];
+        }
+
+        let extraRegels = maakStandaardExtraRegels();
 
         let koppelingen = {
             werkzaamheden: [],
@@ -1245,7 +1257,7 @@
             document.getElementById('tab-extra').classList.toggle('active', tab === 'extra');
             document.getElementById('pane-overzicht').classList.toggle('hidden', tab !== 'overzicht');
             document.getElementById('pane-extra').classList.toggle('hidden', tab !== 'extra');
-            if (tab === 'extra') renderExtraRegels();
+            renderExtraRegels();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -1319,6 +1331,22 @@
             return '€ ' + (Number.isFinite(n) ? n : 0).toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
+        function escapeAttr(str = '') {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/"/g, '&quot;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        function syncUurtarief(val) {
+            const a = document.getElementById('extra-uurtarief');
+            const b = document.getElementById('extra-uurtarief-tab');
+            if (a && a.value !== val) a.value = val;
+            if (b && b.value !== val) b.value = val;
+            verwerkAlles();
+        }
+
         function voegExtraRegelToe() {
             extraRegels.push({
                 postCode: 'SB02',
@@ -1331,14 +1359,20 @@
 
         function verwijderExtraRegel(idx) {
             extraRegels.splice(idx, 1);
+            if (extraRegels.length === 0) {
+                extraRegels = maakStandaardExtraRegels();
+            }
             renderExtraRegels();
             verwerkAlles();
         }
 
-        function updateExtraRegel(idx, veld, waarde) {
+        // Alleen bij select-wijziging de kaarten hertekenen; bij typen (m2 / opmerking) focus behouden!
+        function updateExtraRegel(idx, veld, waarde, herteken = false) {
             if (!extraRegels[idx]) return;
             extraRegels[idx][veld] = waarde;
-            renderExtraRegels();
+            if (herteken) {
+                renderExtraRegels();
+            }
             verwerkAlles();
         }
 
@@ -1353,10 +1387,8 @@
             return { post, m2, uren, bedrag };
         }
 
-        function renderExtraRegels() {
-            const box = document.getElementById('extra-regels-lijst');
-            if (!box) return;
-            box.innerHTML = extraRegels.map((rg, idx) => {
+        function bouwExtraRegelsHtml() {
+            return extraRegels.map((rg, idx) => {
                 const opts = EXTRA_POSTEN.map(p =>
                     `<option value="${p.code}" ${rg.postCode === p.code ? 'selected' : ''}>${p.omschrijving} (m²)</option>`
                 ).join('');
@@ -1365,24 +1397,32 @@
                     <div class="extra-row-card">
                         <div class="extra-row-grid">
                             <div>
-                                <label class="field-label">Post</label>
-                                <select onchange="updateExtraRegel(${idx}, 'postCode', this.value)">${opts}</select>
+                                <label class="field-label">Post (optioneel)</label>
+                                <select onchange="updateExtraRegel(${idx}, 'postCode', this.value, true)">${opts}</select>
                             </div>
                             <div>
-                                <label class="field-label">m²</label>
-                                <input type="number" step="0.1" value="${rg.m2}" oninput="updateExtraRegel(${idx}, 'm2', this.value)">
+                                <label class="field-label">m² (optioneel)</label>
+                                <input type="number" step="any" inputmode="decimal" value="${escapeAttr(rg.m2)}" placeholder="" oninput="updateExtraRegel(${idx}, 'm2', this.value, false)">
                             </div>
                             <div>
-                                <button type="button" class="btn-secondary" style="padding:8px 12px;" onclick="verwijderExtraRegel(${idx})">×</button>
+                                <button type="button" class="btn-secondary" style="padding:8px 12px;" title="Regel wissen" onclick="verwijderExtraRegel(${idx})">×</button>
                             </div>
                         </div>
                         <div class="extra-row-note">
                             <label class="field-label">Opmerking (optioneel, gaat naar Overzicht)</label>
-                            <input type="text" value="${rg.opmerking || ''}" placeholder="" oninput="updateExtraRegel(${idx}, 'opmerking', this.value)">
+                            <input type="text" value="${escapeAttr(rg.opmerking || '')}" placeholder="" oninput="updateExtraRegel(${idx}, 'opmerking', this.value, false)">
                         </div>
                     </div>
                 `;
             }).join('');
+        }
+
+        function renderExtraRegels() {
+            const html = bouwExtraRegelsHtml();
+            const boxMain = document.getElementById('extra-regels-lijst');
+            const boxTab = document.getElementById('extra-regels-lijst-tab');
+            if (boxMain) boxMain.innerHTML = html;
+            if (boxTab) boxTab.innerHTML = html;
         }
 
         function verwerkAlles() {
@@ -1777,7 +1817,7 @@
                 }
             }
 
-            // 4. PLANNING, PRIJS & OVERIGE DETAILS
+            // 4. PLANNING, PRIJS, EXTRA OPVULLING & OVERIGE DETAILS
             const ref = document.getElementById('project-ref').value.trim();
             const planning = document.getElementById('planning-keuze').value;
             const prijsRaw = document.getElementById('prijs-posten').value;
@@ -1805,6 +1845,31 @@
                 });
             }
 
+            if (extraRegels.length > 0) {
+                const extraItems = [];
+                extraRegels.forEach(rg => {
+                    const calc = berekenExtraRegel(rg);
+                    const opm = (rg.opmerking || '').trim();
+                    if (calc.m2 > 0) {
+                        const m2Label = `${calc.m2.toLocaleString('nl-NL', { maximumFractionDigits: 2 })} m²`;
+                        const omschrijving = `${calc.post.omschrijving} (${m2Label})`;
+                        const bedragTekst = calc.bedrag > 0 ? fmtEuro(calc.bedrag) : '€ Niet gerekend';
+
+                        werkzaamheden.push(`${omschrijving}.`);
+                        extraItems.push(`${omschrijving}.`);
+                        prijsPosten.push({ omschrijving, bedrag: bedragTekst });
+                        cnt['sec-planning']++;
+                    }
+                    if (opm && !uitgangspunten.includes(opm)) {
+                        uitgangspunten.push(opm);
+                        cnt['sec-planning']++;
+                    }
+                });
+                if (extraItems.length > 0) {
+                    werkGroepen.push({ titel: 'Aanvullende calculatieposten', items: extraItems });
+                }
+            }
+
             if (offertePrijs) {
                 cnt['sec-planning']++;
             }
@@ -1812,33 +1877,6 @@
             if (overigeDetails) {
                 uitgangspunten.push(overigeDetails);
                 cnt['sec-planning']++;
-            }
-
-            // OPTIONALE M²-REGELS
-            const extraActief = document.getElementById('chk-extra-calculatie').checked;
-            toggle('extra-calculatie-box', extraActief);
-
-            if (extraActief && extraRegels.length > 0) {
-                const extraItems = [];
-                extraRegels.forEach(rg => {
-                    const calc = berekenExtraRegel(rg);
-                    const m2Label = calc.m2 > 0 ? `${calc.m2.toFixed(2).replace('.', ',')} m²` : 'm²';
-                    const omschrijving = `${calc.post.omschrijving} (${m2Label})`;
-                    const bedragTekst = calc.bedrag > 0 ? fmtEuro(calc.bedrag) : '€ Niet gerekend';
-
-                    if (calc.m2 > 0 || rg.opmerking) {
-                        werkzaamheden.push(`${omschrijving}.`);
-                        extraItems.push(`${omschrijving}.`);
-                        prijsPosten.push({ omschrijving, bedrag: bedragTekst });
-                    }
-                    const opm = (rg.opmerking || '').trim();
-                    if (opm && !uitgangspunten.includes(opm)) {
-                        uitgangspunten.push(opm);
-                    }
-                });
-                if (extraItems.length > 0) {
-                    werkGroepen.push({ titel: 'Aanvullende calculatieposten', items: extraItems });
-                }
             }
 
             koppelingen = {
@@ -2052,7 +2090,7 @@
 
         function opnieuwBeginnen() {
             document.getElementById('offerte-form').reset();
-            extraRegels = [];
+            extraRegels = maakStandaardExtraRegels();
             renderExtraRegels();
             verwerkAlles();
             selectSectie('sec-basis');
@@ -2065,6 +2103,7 @@
             });
         }
 
+        renderExtraRegels();
         verwerkAlles();
     </script>
 </body>
