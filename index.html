@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- App-instellingen voor "Zet op beginscherm" -->
+    <!-- App-instellingen voor "Zet op beginscherm" en geopende web-app -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="PW Offerte">
+    <meta name="apple-mobile-web-app-title" content="PlenderWestendorp">
     <meta name="theme-color" content="#e9e8e5">
     <link rel="manifest" href="./manifest.json">
-    <link rel="apple-touch-icon" href="./PlenderWestendorp_app-icoon_512.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="./PlenderWestendorp_app-icoon_512.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="./PlenderWestendorp_app-icoon_512.png">
     <title>Overzicht — PlenderWestendorp</title>
 
     <style>
@@ -56,7 +57,7 @@
         .header-row {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
+            align-items: center;
             gap: 20px;
             padding-bottom: 18px;
         }
@@ -72,11 +73,22 @@
         }
 
         .brand-mark {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
             font-family: var(--font-sans);
             font-size: 14px;
             font-weight: 700;
             color: var(--ink-main);
             white-space: nowrap;
+        }
+
+        .brand-logo {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            border: 1px solid var(--line-strong);
+            background: var(--bg-surface);
         }
 
         /* Tab-balk met alleen Overzicht */
@@ -362,6 +374,17 @@
             border-bottom: none;
         }
 
+        .offerte-prijs-totaal-preview {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--line-strong);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
         /* Onderaan: Reset & PDF export */
         .bottom-bar {
             margin-top: 28px;
@@ -489,6 +512,16 @@
                 border-bottom: 1px solid #999;
                 padding: 4px 0;
             }
+            .pdf-offerte-prijs-row {
+                display: flex;
+                justify-content: space-between;
+                gap: 24px;
+                border-top: 1.5px solid #000;
+                border-bottom: 1.5px solid #000;
+                padding: 6px 0;
+                margin-top: 8px;
+                font-weight: 700;
+            }
         }
     </style>
 </head>
@@ -500,7 +533,10 @@
         <!-- Bovenste kopregel -->
         <header class="header-row">
             <h1 class="doc-title">Offerte Vragenlijst<br>Totaalonderhoud &amp; Opname</h1>
-            <div class="brand-mark">PlenderWestendorp · v1.2</div>
+            <div class="brand-mark">
+                <img src="./PlenderWestendorp_app-icoon_512.png" alt="PlenderWestendorp logo" class="brand-logo">
+                <span>PlenderWestendorp · v1.3</span>
+            </div>
         </header>
 
         <!-- Alleen tab Overzicht -->
@@ -1076,7 +1112,7 @@
                         </div>
                     </section>
 
-                    <!-- SECTIE 4: PLANNING & OVERIGE DETAILS -->
+                    <!-- SECTIE 4: PLANNING, PRIJS & OVERIGE DETAILS -->
                     <section id="sec-planning" class="pane-section">
                         <h2 class="pane-heading">4. Planning &amp; Overige details</h2>
                         <div class="pane-meta" id="meta-sec-planning">0 gekoppeld · start leeg</div>
@@ -1108,6 +1144,12 @@
                         </div>
 
                         <div class="question-block">
+                            <label class="field-label" for="offerte-prijs">Offerte prijs (optioneel)</label>
+                            <span class="field-hint">Wordt onderaan de prijsaanbieding in het overzicht en de PDF-offerte getoond.</span>
+                            <input type="text" id="offerte-prijs" oninput="verwerkAlles()" placeholder="">
+                        </div>
+
+                        <div class="question-block">
                             <label class="field-label" for="overige-details">Overige details (optioneel)</label>
                             <span class="field-hint">Aanvullende beschrijving van wat er gebeurt, maten, uitzonderingen of afspraken op de offerte.</span>
                             <textarea id="overige-details" rows="4" oninput="verwerkAlles()" placeholder=""></textarea>
@@ -1135,6 +1177,7 @@
                             <div class="coupling-group" id="grp-prijs">
                                 <h3 class="coupling-group-title">Prijsaanbieding</h3>
                                 <div id="list-prijs"></div>
+                                <div id="list-offerte-prijs" class="offerte-prijs-totaal-preview hidden"></div>
                             </div>
                             <div class="coupling-group" id="grp-aandacht">
                                 <h3 class="coupling-group-title">Uitgangspunten, aandachtspunten &amp; overige details</h3>
@@ -1211,6 +1254,10 @@
             <h2 class="pdf-h2">Prijsaanbieding</h2>
             <p style="margin: 0 0 8px 0;">De beschreven werkzaamheden in de offerte kunnen wij aanbieden voor:</p>
             <div id="pdf-prijs-regels" style="max-width: 520px;"></div>
+            <div id="pdf-offerte-prijs-regel" class="pdf-offerte-prijs-row hidden" style="max-width: 520px;">
+                <span>Offerte prijs</span>
+                <span id="pdf-offerte-prijs-waarde"></span>
+            </div>
             <p style="margin: 10px 0 0 0; font-size: 10.5pt; color: #333;">Overige niet benoemde werkzaamheden vallen buiten deze opgave.</p>
         </div>
 
@@ -1247,6 +1294,7 @@
             materieel: [],
             uitgangspunten: [],
             prijsPosten: [],
+            offertePrijs: '',
             overigeTekst: '',
             perSectie: {
                 'sec-basis': 0,
@@ -1672,10 +1720,11 @@
                 }
             }
 
-            // 4. PLANNING & OVERIGE DETAILS
+            // 4. PLANNING, PRIJS & OVERIGE DETAILS
             const ref = document.getElementById('project-ref').value.trim();
             const planning = document.getElementById('planning-keuze').value;
             const prijsRaw = document.getElementById('prijs-posten').value;
+            const offertePrijs = document.getElementById('offerte-prijs').value.trim();
             const overigeDetails = document.getElementById('overige-details').value.trim();
 
             if (ref) {
@@ -1698,6 +1747,10 @@
                 });
             }
 
+            if (offertePrijs) {
+                cnt['sec-planning']++;
+            }
+
             if (overigeDetails) {
                 uitgangspunten.push(overigeDetails);
                 cnt['sec-planning']++;
@@ -1709,6 +1762,7 @@
                 materieel,
                 uitgangspunten,
                 prijsPosten,
+                offertePrijs,
                 overigeTekst: overigeDetails,
                 perSectie: cnt
             };
@@ -1717,9 +1771,10 @@
         }
 
         function updateTellersEnOverzicht() {
-            const { werkzaamheden, behandeling, materieel, uitgangspunten, prijsPosten, perSectie } = koppelingen;
+            const { werkzaamheden, behandeling, materieel, uitgangspunten, prijsPosten, offertePrijs, perSectie } = koppelingen;
             const alleWerk = [...werkzaamheden, ...behandeling];
-            const totaal = alleWerk.length + materieel.length + uitgangspunten.length + prijsPosten.length;
+            const prijsCount = prijsPosten.length + (offertePrijs ? 1 : 0);
+            const totaal = alleWerk.length + materieel.length + uitgangspunten.length + prijsCount;
 
             Object.keys(perSectie).forEach(secId => {
                 const n = perSectie[secId];
@@ -1747,11 +1802,11 @@
 
             leegBox.classList.add('hidden');
             gevuldBox.classList.remove('hidden');
-            submeta.textContent = `${totaal} gekoppeld (${alleWerk.length} werk/behandeling · ${materieel.length} steiger/materieel · ${prijsPosten.length} prijsregels · ${uitgangspunten.length} uitgangspunten/details)`;
+            submeta.textContent = `${totaal} gekoppeld (${alleWerk.length} werk/behandeling · ${materieel.length} steiger/materieel · ${prijsCount} prijs · ${uitgangspunten.length} uitgangspunten/details)`;
 
             vulUl('grp-werk', 'list-werk', alleWerk);
             vulUl('grp-steiger', 'list-steiger', materieel);
-            vulPrijsPreview('grp-prijs', 'list-prijs', prijsPosten);
+            vulPrijsPreview('grp-prijs', 'list-prijs', 'list-offerte-prijs', prijsPosten, offertePrijs);
             vulUl('grp-aandacht', 'list-aandacht', uitgangspunten);
         }
 
@@ -1762,18 +1817,27 @@
             ul.innerHTML = items.map(item => `<li>${item}</li>`).join('');
         }
 
-        function vulPrijsPreview(grpId, boxId, posten) {
+        function vulPrijsPreview(grpId, boxId, totaalId, posten, offertePrijs) {
             const grp = document.getElementById(grpId);
             const box = document.getElementById(boxId);
-            grp.classList.toggle('hidden', posten.length === 0);
+            const totaalBox = document.getElementById(totaalId);
+            grp.classList.toggle('hidden', posten.length === 0 && !offertePrijs);
             box.innerHTML = posten
                 .map(p => `<div class="prijs-regel-preview"><span>${p.omschrijving}</span><span>${p.bedrag}</span></div>`)
                 .join('');
+            if (offertePrijs) {
+                totaalBox.classList.remove('hidden');
+                totaalBox.innerHTML = `<span>Offerte prijs</span><span>${offertePrijs}</span>`;
+            } else {
+                totaalBox.classList.add('hidden');
+                totaalBox.innerHTML = '';
+            }
         }
 
         function exporteerPDF() {
-            const { werkzaamheden, behandeling, materieel, uitgangspunten, prijsPosten, overigeTekst } = koppelingen;
-            if (werkzaamheden.length + behandeling.length + materieel.length + uitgangspunten.length + prijsPosten.length === 0) return;
+            const { werkzaamheden, behandeling, materieel, uitgangspunten, prijsPosten, offertePrijs, overigeTekst } = koppelingen;
+            const prijsCount = prijsPosten.length + (offertePrijs ? 1 : 0);
+            if (werkzaamheden.length + behandeling.length + materieel.length + uitgangspunten.length + prijsCount === 0) return;
 
             const vandaag = new Date().toLocaleDateString('nl-NL', {
                 day: 'numeric',
@@ -1853,6 +1917,16 @@
                     ? werkzaamheden.map(w => w.replace(/\.$/, '')).join(' · ')
                     : 'Omschreven werkzaamheden';
                 prijsBox.innerHTML = `<div class="pdf-prijs-row"><span>${prijsOmschrijving}</span><span>€Niet gerekend</span></div>`;
+            }
+
+            const offertePrijsRegel = document.getElementById('pdf-offerte-prijs-regel');
+            const offertePrijsWaarde = document.getElementById('pdf-offerte-prijs-waarde');
+            if (offertePrijs) {
+                offertePrijsRegel.classList.remove('hidden');
+                offertePrijsWaarde.textContent = offertePrijs;
+            } else {
+                offertePrijsRegel.classList.add('hidden');
+                offertePrijsWaarde.textContent = '';
             }
 
             window.print();
