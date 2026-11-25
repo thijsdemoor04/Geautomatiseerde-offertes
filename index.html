@@ -332,9 +332,16 @@
 
         .extra-row-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr auto;
+            grid-template-columns: 2fr 1fr 1fr auto;
             gap: 10px;
             align-items: end;
+        }
+
+        .extra-row-total {
+            margin-top: 8px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--ink-main);
         }
 
         .extra-row-note {
@@ -527,7 +534,7 @@
             <h1 class="doc-title">Offerte Vragenlijst<br>Totaalonderhoud &amp; Opname</h1>
             <div class="brand-mark">
                 <img src="./PlenderWestendorp_app-icoon_512.png" alt="PlenderWestendorp logo" class="brand-logo">
-                <span>PlenderWestendorp · v3.0</span>
+                <span>PlenderWestendorp · v3.1</span>
             </div>
         </header>
 
@@ -1106,7 +1113,7 @@
                         <!-- SECTIE 4: PLANNING & OFFERTE PRIJS -->
                         <section id="sec-planning" class="pane-section">
                             <h2 class="pane-heading">4. Planning &amp; Offerte prijs</h2>
-                            <div class="pane-meta" id="meta-sec-planning">0 gekoppeld · projectnummer en opvulling vereist</div>
+                            <div class="pane-meta" id="meta-sec-planning">0 gekoppeld · projectnummer en offerte prijs vereist</div>
 
                             <div class="question-block">
                                 <div class="form-grid-2">
@@ -1134,29 +1141,35 @@
                                 <textarea id="prijs-posten" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
                             </div>
 
-                            <!-- DIRECT IN HET OVERZICHT: OPVULLING -> TOTAAL WORDT OFFERTE PRIJS -->
+                            <!-- EXTRA BLOK BOVENAAN: EIGEN INVULLEN -->
+                            <div class="question-block" id="blok-eigen-invullen">
+                                <div class="linked-box" style="margin-top:0;">
+                                    <div class="linked-title">Eigen invullen (losse post / reisuren)</div>
+                                    <div class="form-grid-2">
+                                        <div>
+                                            <label class="field-label" for="eigen-post-tekst">Eigen omschrijving (bijv. reisuren)</label>
+                                            <input type="text" id="eigen-post-tekst" oninput="verwerkAlles()" placeholder="">
+                                        </div>
+                                        <div>
+                                            <label class="field-label" for="eigen-post-bedrag">Bedrag (€)</label>
+                                            <input type="number" step="any" min="0" inputmode="decimal" id="eigen-post-bedrag" oninput="verwerkAlles()" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- OUDE BLOK BEHOUDEN: TAPS MET POST, BEDRAG, M2 -> TOTAAL -->
                             <div class="question-block" id="overzicht-opvulling">
                                 <div class="linked-box" style="margin-top:0;">
-                                    <div class="linked-title">Opvulling &amp; Offerte prijs <span class="req-mark">*</span></div>
-                                    <span class="field-hint">Schrijf zelf een post (bijv. reisuren, wanden sauzen of glas plaatsen) en vul het bedrag in. Het totaal hieronder wordt de Offerte prijs.</span>
-
-                                    <datalist id="opvulling-suggesties">
-                                        <option value="Wanden sauzen">
-                                        <option value="Plafonds sauzen">
-                                        <option value="Gevelbetimmering schilderen">
-                                        <option value="Gevel reinigen">
-                                        <option value="Vliesbehang aanbrengen">
-                                        <option value="Glas plaatsen">
-                                        <option value="Stucwerk wanden">
-                                        <option value="Reisuren">
-                                    </datalist>
+                                    <div class="linked-title">Posten &amp; m² berekening</div>
+                                    <span class="field-hint">Kies een post, vul bedrag en m² in. Het totaal per regel en het totaal onderaan worden automatisch berekend.</span>
 
                                     <div id="extra-regels-lijst"></div>
 
-                                    <button type="button" class="action-link-btn" onclick="voegExtraRegelToe()">+ Opvulling regel toevoegen</button>
+                                    <button type="button" class="action-link-btn" onclick="voegExtraRegelToe()">+ Regel toevoegen</button>
 
                                     <div class="opvulling-summary" id="opvulling-totaal-balk">
-                                        <span>Offerte prijs</span>
+                                        <span>Offerte prijs (totaal)</span>
                                         <span id="opvulling-totaal-waarde">€ 0,00</span>
                                     </div>
                                 </div>
@@ -1175,7 +1188,7 @@
                             <div class="pane-meta" id="koppelingen-submeta">0 gekoppeld · projectnummer en offerte prijs vereist</div>
 
                             <div id="koppelingen-leeg">
-                                <span class="field-hint" style="margin:0;">Nog niets gekoppeld. Zodra je hierboven keuzes, projectnummer of opvulling invult, verschijnen hier de gekoppelde onderdelen en de Offerte prijs.</span>
+                                <span class="field-hint" style="margin:0;">Nog niets gekoppeld. Zodra je hierboven keuzes, projectnummer of posten invult, verschijnen hier de gekoppelde onderdelen en de Offerte prijs.</span>
                             </div>
 
                             <div id="koppelingen-gevuld" class="hidden">
@@ -1192,7 +1205,7 @@
                                     <div id="list-prijs"></div>
                                     <div id="list-offerte-prijs" class="offerte-prijs-totaal-preview hidden"></div>
                                     <div id="offerte-prijs-ontbreekt" class="offerte-prijs-warning hidden">
-                                        <span id="warn-tekst"><strong>Let op:</strong> Vul nog een <strong>Project / Referentienummer</strong> en een bedrag bij <strong>Opvulling</strong> in.</span>
+                                        <span id="warn-tekst"><strong>Let op:</strong> Vul nog een <strong>Project / Referentienummer</strong> en een bedrag in.</span>
                                         <button type="button" class="action-link-btn" style="margin-top:0;" onclick="gaNaarOntbrekend()">Invullen</button>
                                     </div>
                                 </div>
@@ -1219,8 +1232,18 @@
     <script>
         const WORKER_URL = 'https://plender-offerte-docx.thijsdemoor.workers.dev/';
 
+        const TAPS_POSTEN = [
+            { code: 'SB02', omschrijving: 'Wanden sauzen' },
+            { code: 'SB03', omschrijving: 'Plafonds sauzen' },
+            { code: 'SB08', omschrijving: 'Gevelbetimmering schilderen' },
+            { code: 'SU10', omschrijving: 'Gevel reinigen' },
+            { code: 'W06', omschrijving: 'Vliesbehang aanbrengen' },
+            { code: 'G01', omschrijving: 'Glas plaatsen' },
+            { code: 'A12', omschrijving: 'Stucwerk wanden' }
+        ];
+
         function maakStandaardExtraRegels() {
-            return [{ omschrijving: '', bedrag: '', opmerking: '' }];
+            return [{ postCode: 'SB02', bedrag: '', m2: '', opmerking: '' }];
         }
 
         let extraRegels = maakStandaardExtraRegels();
@@ -1233,7 +1256,7 @@
             uitgangspunten: [],
             prijsPosten: [],
             offertePrijs: '',
-            opvullingTotaal: 0,
+            totaalPrijs: 0,
             projectRef: '',
             overigeTekst: '',
             perSectie: {
@@ -1261,10 +1284,10 @@
                 setTimeout(() => refVeld.focus(), 250);
                 return;
             }
-            const eersteBedrag = document.querySelector('#extra-regels-lijst input[type="number"]');
-            if (eersteBedrag) {
-                eersteBedrag.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                setTimeout(() => eersteBedrag.focus(), 250);
+            const eigenBedrag = document.getElementById('eigen-post-bedrag');
+            if (eigenBedrag) {
+                eigenBedrag.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => eigenBedrag.focus(), 250);
             }
         }
 
@@ -1342,8 +1365,9 @@
 
         function voegExtraRegelToe() {
             extraRegels.push({
-                omschrijving: '',
+                postCode: 'SB02',
                 bedrag: '',
+                m2: '',
                 opmerking: ''
             });
             renderExtraRegels();
@@ -1359,34 +1383,56 @@
             verwerkAlles();
         }
 
-        function updateExtraRegel(idx, veld, waarde) {
+        function updateExtraRegel(idx, veld, waarde, herteken = false) {
             if (!extraRegels[idx]) return;
             extraRegels[idx][veld] = waarde;
+            if (herteken) {
+                renderExtraRegels();
+            }
             verwerkAlles();
+        }
+
+        function berekenTapRegel(rg) {
+            const post = TAPS_POSTEN.find(p => p.code === rg.postCode) || TAPS_POSTEN[0];
+            const bedragPerM2 = numVal(rg.bedrag);
+            const m2 = numVal(rg.m2);
+            const totaal = (bedragPerM2 > 0 && m2 > 0) ? bedragPerM2 * m2 : 0;
+            return { post, bedragPerM2, m2, totaal };
         }
 
         function renderExtraRegels() {
             const boxMain = document.getElementById('extra-regels-lijst');
             if (!boxMain) return;
             boxMain.innerHTML = extraRegels.map((rg, idx) => {
+                const opts = TAPS_POSTEN.map(p =>
+                    `<option value="${p.code}" ${rg.postCode === p.code ? 'selected' : ''}>${p.omschrijving}</option>`
+                ).join('');
+                const calc = berekenTapRegel(rg);
+                const regelTotaalTekst = calc.totaal > 0 ? fmtEuro(calc.totaal) : '€ Niet gerekend';
+
                 return `
                     <div class="extra-row-card">
                         <div class="extra-row-grid">
                             <div>
-                                <label class="field-label">Post / omschrijving</label>
-                                <input type="text" list="opvulling-suggesties" value="${escapeAttr(rg.omschrijving || '')}" placeholder="" oninput="updateExtraRegel(${idx}, 'omschrijving', this.value)">
+                                <label class="field-label">Post</label>
+                                <select onchange="updateExtraRegel(${idx}, 'postCode', this.value, true)">${opts}</select>
                             </div>
                             <div>
-                                <label class="field-label">Bedrag (€)</label>
-                                <input type="number" step="any" min="0" inputmode="decimal" value="${escapeAttr(rg.bedrag || '')}" placeholder="" oninput="updateExtraRegel(${idx}, 'bedrag', this.value)">
+                                <label class="field-label">Bedrag (€ / m²)</label>
+                                <input type="number" step="any" min="0" inputmode="decimal" value="${escapeAttr(rg.bedrag || '')}" placeholder="" oninput="updateExtraRegel(${idx}, 'bedrag', this.value, false)">
+                            </div>
+                            <div>
+                                <label class="field-label">Vierkante meter (m²)</label>
+                                <input type="number" step="any" min="0" inputmode="decimal" value="${escapeAttr(rg.m2 || '')}" placeholder="" oninput="updateExtraRegel(${idx}, 'm2', this.value, false)">
                             </div>
                             <div>
                                 <button type="button" class="btn-secondary" style="padding:8px 12px;" title="Regel wissen" onclick="verwijderExtraRegel(${idx})">×</button>
                             </div>
                         </div>
+                        <div class="extra-row-total" id="tap-regel-totaal-${idx}">Totaal regel: ${regelTotaalTekst}</div>
                         <div class="extra-row-note">
                             <label class="field-label">Opmerking (gaat naar Overzicht)</label>
-                            <input type="text" value="${escapeAttr(rg.opmerking || '')}" placeholder="" oninput="updateExtraRegel(${idx}, 'opmerking', this.value)">
+                            <input type="text" value="${escapeAttr(rg.opmerking || '')}" placeholder="" oninput="updateExtraRegel(${idx}, 'opmerking', this.value, false)">
                         </div>
                     </div>
                 `;
@@ -1785,10 +1831,12 @@
                 }
             }
 
-            // 4. PLANNING, PRIJS, OPVULLING & OVERIGE DETAILS
+            // 4. PLANNING, PRIJS, EIGEN INVULLEN, TAPS & OVERIGE DETAILS
             const ref = document.getElementById('project-ref').value.trim();
             const planning = document.getElementById('planning-keuze').value;
             const prijsRaw = document.getElementById('prijs-posten').value;
+            const eigenTekst = document.getElementById('eigen-post-tekst').value.trim();
+            const eigenBedrag = numVal(document.getElementById('eigen-post-bedrag').value);
             const overigeDetails = document.getElementById('overige-details').value.trim();
 
             if (ref) {
@@ -1811,22 +1859,38 @@
                 });
             }
 
-            let opvullingTotaal = 0;
-            const opvullingItems = [];
-            extraRegels.forEach(rg => {
-                const omschr = (rg.omschrijving || '').trim();
-                const bedragNum = numVal(rg.bedrag);
-                const opm = (rg.opmerking || '').trim();
+            let totaalPrijs = 0;
+            const extraGroepItems = [];
 
-                if (omschr || bedragNum > 0) {
-                    const label = omschr || 'Opvulling';
-                    const bedragTekst = bedragNum > 0 ? fmtEuro(bedragNum) : '€ Niet gerekend';
-                    if (bedragNum > 0) {
-                        opvullingTotaal += bedragNum;
-                    }
-                    werkzaamheden.push(`${label}.`);
-                    opvullingItems.push(`${label}.`);
-                    prijsPosten.push({ omschrijving: label, bedrag: bedragTekst });
+            // Blok bovenaan: eigen invullen
+            if (eigenTekst || eigenBedrag > 0) {
+                const label = eigenTekst || 'Eigen post';
+                const bedragTekst = eigenBedrag > 0 ? fmtEuro(eigenBedrag) : '€ Niet gerekend';
+                if (eigenBedrag > 0) totaalPrijs += eigenBedrag;
+                werkzaamheden.push(`${label}.`);
+                extraGroepItems.push(`${label}.`);
+                prijsPosten.push({ omschrijving: label, bedrag: bedragTekst });
+                cnt['sec-planning']++;
+            }
+
+            // Oude blok met taps: post + bedrag + m2 -> totaal per regel
+            extraRegels.forEach((rg, idx) => {
+                const calc = berekenTapRegel(rg);
+                const regelTotaalEl = document.getElementById(`tap-regel-totaal-${idx}`);
+                if (regelTotaalEl) {
+                    regelTotaalEl.textContent = `Totaal regel: ${calc.totaal > 0 ? fmtEuro(calc.totaal) : '€ Niet gerekend'}`;
+                }
+
+                const opm = (rg.opmerking || '').trim();
+                if (calc.totaal > 0 || (calc.bedragPerM2 > 0 && calc.m2 > 0)) {
+                    const m2Label = `${calc.m2.toLocaleString('nl-NL', { maximumFractionDigits: 2 })} m²`;
+                    const omschrijving = `${calc.post.omschrijving} (${m2Label})`;
+                    const bedragTekst = calc.totaal > 0 ? fmtEuro(calc.totaal) : '€ Niet gerekend';
+                    if (calc.totaal > 0) totaalPrijs += calc.totaal;
+
+                    werkzaamheden.push(`${omschrijving}.`);
+                    extraGroepItems.push(`${omschrijving}.`);
+                    prijsPosten.push({ omschrijving, bedrag: bedragTekst });
                     cnt['sec-planning']++;
                 }
 
@@ -1836,14 +1900,14 @@
                 }
             });
 
-            if (opvullingItems.length > 0) {
-                werkGroepen.push({ titel: 'Opvulling', items: opvullingItems });
+            if (extraGroepItems.length > 0) {
+                werkGroepen.push({ titel: 'Extra posten', items: extraGroepItems });
             }
 
-            const offertePrijs = opvullingTotaal > 0 ? fmtEuro(opvullingTotaal) : '';
+            const offertePrijs = totaalPrijs > 0 ? fmtEuro(totaalPrijs) : '';
             const totaalWaardeEl = document.getElementById('opvulling-totaal-waarde');
             if (totaalWaardeEl) {
-                totaalWaardeEl.textContent = fmtEuro(opvullingTotaal);
+                totaalWaardeEl.textContent = fmtEuro(totaalPrijs);
             }
 
             if (overigeDetails) {
@@ -1859,7 +1923,7 @@
                 uitgangspunten,
                 prijsPosten,
                 offertePrijs,
-                opvullingTotaal,
+                totaalPrijs,
                 projectRef: ref,
                 overigeTekst: overigeDetails,
                 perSectie: cnt
@@ -1880,7 +1944,7 @@
                 const meta = document.getElementById('meta-' + secId);
                 if (sub) sub.textContent = `${n} gekoppeld`;
                 if (meta) meta.textContent = secId === 'sec-planning'
-                    ? `${n} gekoppeld · projectnummer en opvulling vereist`
+                    ? `${n} gekoppeld · projectnummer en offerte prijs vereist`
                     : `${n} gekoppeld`;
             });
 
@@ -1914,7 +1978,7 @@
             gevuldBox.classList.remove('hidden');
             submeta.textContent = exportKlaar
                 ? `${totaal} gekoppeld · Offerte prijs ${offertePrijs} · Project ${projectRef}`
-                : `${totaal} gekoppeld · Vul projectnummer en opvullingbedrag in om te downloaden`;
+                : `${totaal} gekoppeld · Vul projectnummer en een bedrag in om te downloaden`;
 
             vulUl('grp-werk', 'list-werk', alleWerk);
             vulUl('grp-steiger', 'list-steiger', materieel);
@@ -1942,7 +2006,7 @@
 
             if (offertePrijs) {
                 totaalBox.classList.remove('hidden');
-                totaalBox.innerHTML = `<span>Offerte prijs (totaal opvulling)</span><span>${offertePrijs}</span>`;
+                totaalBox.innerHTML = `<span>Offerte prijs (totaal)</span><span>${offertePrijs}</span>`;
             } else {
                 totaalBox.classList.add('hidden');
                 totaalBox.innerHTML = '';
@@ -1950,7 +2014,7 @@
 
             const ontbreekt = [];
             if (!projectRef) ontbreekt.push('Project / Referentienummer');
-            if (!offertePrijs) ontbreekt.push('een bedrag bij Opvulling');
+            if (!offertePrijs) ontbreekt.push('een bedrag');
 
             if (ontbreekt.length > 0 && aantalGekoppeld > 0) {
                 warnBox.classList.remove('hidden');
