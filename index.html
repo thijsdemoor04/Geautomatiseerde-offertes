@@ -6,7 +6,10 @@
     <!-- App-instellingen voor "Zet op beginscherm" -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="PW Offerte">
     <meta name="theme-color" content="#e9e8e5">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="./PlenderWestendorp_app-icoon_512.png">
     <title>Overzicht — PlenderWestendorp</title>
 
     <style>
@@ -414,7 +417,7 @@
             display: none !important;
         }
 
-        /* PDF-weergave in stijl van offertevoorbeeld */
+        /* PDF-weergave afgestemd op Offerte_voor html.docx */
         #pdf-sheet {
             display: none;
         }
@@ -497,7 +500,7 @@
         <!-- Bovenste kopregel -->
         <header class="header-row">
             <h1 class="doc-title">Offerte Vragenlijst<br>Totaalonderhoud &amp; Opname</h1>
-            <div class="brand-mark">PlenderWestendorp · v1.1</div>
+            <div class="brand-mark">PlenderWestendorp · v1.2</div>
         </header>
 
         <!-- Alleen tab Overzicht -->
@@ -545,28 +548,36 @@
                         <div class="question-block">
                             <div class="form-grid-2">
                                 <div>
-                                    <label class="field-label" for="klant-naam">Opdrachtgever / Organisatie</label>
+                                    <label class="field-label" for="klant-naam">Naam bedrijf / opdrachtgever</label>
                                     <input type="text" id="klant-naam" oninput="verwerkAlles()" placeholder="">
                                 </div>
                                 <div>
-                                    <label class="field-label" for="klant-contact">T.a.v. / Contactpersoon</label>
+                                    <label class="field-label" for="klant-contact">T.a.v. (Dhr./Mevr. naam contactpersoon)</label>
                                     <input type="text" id="klant-contact" oninput="verwerkAlles()" placeholder="">
                                 </div>
                                 <div>
-                                    <label class="field-label" for="klant-adres">Adres / Huisnummer</label>
+                                    <label class="field-label" for="klant-adres">Straat en huisnummer</label>
                                     <input type="text" id="klant-adres" oninput="verwerkAlles()" placeholder="">
                                 </div>
                                 <div>
-                                    <label class="field-label" for="klant-plaats">Postcode &amp; Plaats</label>
+                                    <label class="field-label" for="klant-plaats">Postcode en plaats</label>
                                     <input type="text" id="klant-plaats" oninput="verwerkAlles()" placeholder="">
                                 </div>
                                 <div>
-                                    <label class="field-label" for="onderwerp-project">Onderwerp offerte (optioneel)</label>
+                                    <label class="field-label" for="projectnaam-veld">Projectnaam (optioneel)</label>
+                                    <input type="text" id="projectnaam-veld" oninput="verwerkAlles()" placeholder="">
+                                </div>
+                                <div>
+                                    <label class="field-label" for="onderwerp-project">Omschrijving werkzaamheden · Onderwerp (optioneel)</label>
                                     <input type="text" id="onderwerp-project" oninput="verwerkAlles()" placeholder="">
                                 </div>
                                 <div>
                                     <label class="field-label" for="behandeld-door">Behandeld door (optioneel)</label>
                                     <input type="text" id="behandeld-door" oninput="verwerkAlles()" placeholder="">
+                                </div>
+                                <div>
+                                    <label class="field-label" for="offerte-plaats-datum">Plaats, datum (optioneel, standaard Kampen + vandaag)</label>
+                                    <input type="text" id="offerte-plaats-datum" oninput="verwerkAlles()" placeholder="">
                                 </div>
                             </div>
                         </div>
@@ -1144,13 +1155,13 @@
     </div>
 
     <!-- ======================================================
-         PDF-DOCUMENT (STIJL OFFERTEVOORBEELD PLENDERWESTENDORP)
+         PDF-DOCUMENT (AFGESTEMD OP OFFERTE_VOOR HTML.DOCX)
          ====================================================== -->
     <div id="pdf-sheet">
-        <!-- Adresblok links + Kampen & datum rechts -->
+        <!-- Adresblok links + Plaats, datum rechts -->
         <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 18px;">
             <div id="pdf-adresblok" style="min-height: 60px;"></div>
-            <div style="text-align: right; white-space: nowrap;">Kampen, <span id="pdf-datum"></span></div>
+            <div style="text-align: right; white-space: nowrap;" id="pdf-plaats-datum"></div>
         </div>
 
         <!-- Onderwerp & Behandeld door -->
@@ -1218,7 +1229,7 @@
                 <div>
                     <div style="margin-bottom: 24px;">Met vriendelijke groet,</div>
                     <div style="font-weight: 700;">Plenderwestendorp</div>
-                    <div id="pdf-ondertekenaar"></div>
+                    <div id="pdf-ondertekenaar">Ingevuld door ………</div>
                 </div>
                 <div>
                     <div style="margin-bottom: 24px;">Handtekening:</div>
@@ -1289,6 +1300,15 @@
             const laatste = lagen[lagen.length - 1];
             const overige = lagen.slice(0, -1).join(', ');
             return `${overige} en ${laatste}`;
+        }
+
+        function haalAchternaamOp(contactpersoon) {
+            const schoon = (contactpersoon || '')
+                .replace(/^(dhr\.?|meneer|mw\.?|mevr\.?|mevrouw)\s+/i, '')
+                .trim();
+            if (!schoon) return '';
+            const delen = schoon.split(/\s+/);
+            return delen[delen.length - 1];
         }
 
         function verwerkAlles() {
@@ -1760,7 +1780,8 @@
                 month: 'long',
                 year: 'numeric'
             });
-            document.getElementById('pdf-datum').textContent = vandaag;
+            const plaatsDatumInput = document.getElementById('offerte-plaats-datum').value.trim();
+            document.getElementById('pdf-plaats-datum').textContent = plaatsDatumInput || `Kampen, ${vandaag}`;
 
             const klantNaam = document.getElementById('klant-naam').value.trim();
             const klantContact = document.getElementById('klant-contact').value.trim();
@@ -1775,13 +1796,21 @@
             ].filter(Boolean);
             document.getElementById('pdf-adresblok').innerHTML = adresRegels.join('<br>');
 
-            const onderwerp = document.getElementById('onderwerp-project').value.trim();
+            const projectNaam = document.getElementById('projectnaam-veld').value.trim();
+            const onderwerpOmschrijving = document.getElementById('onderwerp-project').value.trim();
             const behandeldDoor = document.getElementById('behandeld-door').value.trim();
 
+            let onderwerpSamengesteld = '';
+            if (projectNaam && onderwerpOmschrijving) {
+                onderwerpSamengesteld = `${projectNaam} – ${onderwerpOmschrijving}`;
+            } else {
+                onderwerpSamengesteld = projectNaam || onderwerpOmschrijving;
+            }
+
             const onderwerpRegel = document.getElementById('pdf-onderwerp-regel');
-            if (onderwerp) {
+            if (onderwerpSamengesteld) {
                 onderwerpRegel.classList.remove('hidden');
-                document.getElementById('pdf-onderwerp-tekst').textContent = onderwerp;
+                document.getElementById('pdf-onderwerp-tekst').textContent = onderwerpSamengesteld;
             } else {
                 onderwerpRegel.classList.add('hidden');
             }
@@ -1790,15 +1819,16 @@
             if (behandeldDoor) {
                 behandeldRegel.classList.remove('hidden');
                 document.getElementById('pdf-behandeld-tekst').textContent = behandeldDoor;
-                document.getElementById('pdf-ondertekenaar').textContent = behandeldDoor;
+                document.getElementById('pdf-ondertekenaar').textContent = `Ingevuld door ${behandeldDoor}`;
             } else {
                 behandeldRegel.classList.add('hidden');
-                document.getElementById('pdf-ondertekenaar').textContent = '';
+                document.getElementById('pdf-ondertekenaar').textContent = 'Ingevuld door ………';
             }
 
-            document.getElementById('pdf-aanhef').textContent = klantContact
-                ? `Geachte ${klantContact},`
-                : 'Geachte heer / mevrouw,';
+            const achternaam = haalAchternaamOp(klantContact);
+            document.getElementById('pdf-aanhef').textContent = achternaam
+                ? `Geachte heer/mevrouw ${achternaam},`
+                : 'Geachte heer/mevrouw,';
 
             const alleUitgangspunten = [...uitgangspunten, ...materieel];
             vulPdfSec('pdf-sec-uitgangspunten', 'pdf-list-uitgangspunten', alleUitgangspunten);
@@ -1842,10 +1872,13 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js');
+            });
+        }
+
         verwerkAlles();
     </script>
 </body>
 </html>
-```[cite: 1]
-
-Wil je dat ik hierna ook het knopje/veld toevoeg om vaste bedrijfsdocumenten (zoals een PDF of voorwaardenbestand op GitHub) direct aan de offerte te koppelen?
