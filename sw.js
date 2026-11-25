@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pw-offerte-versie-11';
+const CACHE_NAME = 'pw-offerte-versie-12';
 
 const ASSETS_TO_CACHE = [
   './',
