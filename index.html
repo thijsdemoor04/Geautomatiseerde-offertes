@@ -302,8 +302,12 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.04em;
-            margin: 0 0 10px 0;
+            margin: 14px 0 8px 0;
             color: var(--ink-main);
+        }
+
+        .linked-title:first-child {
+            margin-top: 0;
         }
 
         .action-link-btn {
@@ -323,11 +327,25 @@
             opacity: 0.9;
         }
 
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
         .extra-row-card {
             padding: 14px 16px;
             margin-top: 12px;
             background: var(--bg-surface);
             border: 1px solid var(--line-strong);
+        }
+
+        .eigen-row-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 10px;
+            align-items: end;
         }
 
         .extra-row-grid {
@@ -497,7 +515,8 @@
         }
 
         @media (max-width: 900px) {
-            .extra-row-grid {
+            .extra-row-grid,
+            .eigen-row-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -534,7 +553,7 @@
             <h1 class="doc-title">Offerte Vragenlijst<br>Totaalonderhoud &amp; Opname</h1>
             <div class="brand-mark">
                 <img src="./PlenderWestendorp_app-icoon_512.png" alt="PlenderWestendorp logo" class="brand-logo">
-                <span>PlenderWestendorp · v3.1</span>
+                <span>PlenderWestendorp · v3.2</span>
             </div>
         </header>
 
@@ -1141,32 +1160,17 @@
                                 <textarea id="prijs-posten" rows="2" oninput="verwerkAlles()" placeholder=""></textarea>
                             </div>
 
-                            <!-- EXTRA BLOK BOVENAAN: EIGEN INVULLEN -->
-                            <div class="question-block" id="blok-eigen-invullen">
+                            <!-- 1 SAMENGEVOEGD ONDERDEEL: EIGEN INVULLEN + POSTEN & M² BEREKENING -->
+                            <div class="question-block" id="blok-samengevoegd-invullen">
                                 <div class="linked-box" style="margin-top:0;">
                                     <div class="linked-title">Eigen invullen (losse post / reisuren)</div>
-                                    <div class="form-grid-2">
-                                        <div>
-                                            <label class="field-label" for="eigen-post-tekst">Eigen omschrijving (bijv. reisuren)</label>
-                                            <input type="text" id="eigen-post-tekst" oninput="verwerkAlles()" placeholder="">
-                                        </div>
-                                        <div>
-                                            <label class="field-label" for="eigen-post-bedrag">Bedrag (€)</label>
-                                            <input type="number" step="any" min="0" inputmode="decimal" id="eigen-post-bedrag" oninput="verwerkAlles()" placeholder="">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                    <div id="eigen-regels-lijst"></div>
+                                    <button type="button" class="action-link-btn" onclick="voegEigenRegelToe()">+ Eigen regel toevoegen</button>
 
-                            <!-- OUDE BLOK BEHOUDEN: TAPS MET POST, BEDRAG, M2 -> TOTAAL -->
-                            <div class="question-block" id="overzicht-opvulling">
-                                <div class="linked-box" style="margin-top:0;">
                                     <div class="linked-title">Posten &amp; m² berekening</div>
                                     <span class="field-hint">Kies een post, vul bedrag en m² in. Het totaal per regel en het totaal onderaan worden automatisch berekend.</span>
-
                                     <div id="extra-regels-lijst"></div>
-
-                                    <button type="button" class="action-link-btn" onclick="voegExtraRegelToe()">+ Regel toevoegen</button>
+                                    <button type="button" class="action-link-btn" onclick="voegExtraRegelToe()">+ Post / m² regel toevoegen</button>
 
                                     <div class="opvulling-summary" id="opvulling-totaal-balk">
                                         <span>Offerte prijs (totaal)</span>
@@ -1242,10 +1246,15 @@
             { code: 'A12', omschrijving: 'Stucwerk wanden' }
         ];
 
+        function maakStandaardEigenRegels() {
+            return [{ omschrijving: '', bedrag: '' }];
+        }
+
         function maakStandaardExtraRegels() {
             return [{ postCode: 'SB02', bedrag: '', m2: '', opmerking: '' }];
         }
 
+        let eigenRegels = maakStandaardEigenRegels();
         let extraRegels = maakStandaardExtraRegels();
 
         let koppelingen = {
@@ -1284,7 +1293,7 @@
                 setTimeout(() => refVeld.focus(), 250);
                 return;
             }
-            const eigenBedrag = document.getElementById('eigen-post-bedrag');
+            const eigenBedrag = document.querySelector('#eigen-regels-lijst input[type="number"]');
             if (eigenBedrag) {
                 eigenBedrag.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 setTimeout(() => eigenBedrag.focus(), 250);
@@ -1361,6 +1370,49 @@
                 .replace(/_+/g, '_')
                 .replace(/^_+|_+$/g, '');
             return cleaned || fallback;
+        }
+
+        function voegEigenRegelToe() {
+            eigenRegels.push({ omschrijving: '', bedrag: '' });
+            renderEigenRegels();
+            verwerkAlles();
+        }
+
+        function verwijderEigenRegel(idx) {
+            eigenRegels.splice(idx, 1);
+            if (eigenRegels.length === 0) {
+                eigenRegels = maakStandaardEigenRegels();
+            }
+            renderEigenRegels();
+            verwerkAlles();
+        }
+
+        function updateEigenRegel(idx, veld, waarde) {
+            if (!eigenRegels[idx]) return;
+            eigenRegels[idx][veld] = waarde;
+            verwerkAlles();
+        }
+
+        function renderEigenRegels() {
+            const box = document.getElementById('eigen-regels-lijst');
+            if (!box) return;
+            box.innerHTML = eigenRegels.map((rg, idx) => `
+                <div class="extra-row-card">
+                    <div class="eigen-row-grid">
+                        <div>
+                            <label class="field-label">Eigen omschrijving (bijv. reisuren)</label>
+                            <input type="text" value="${escapeAttr(rg.omschrijving || '')}" placeholder="" oninput="updateEigenRegel(${idx}, 'omschrijving', this.value)">
+                        </div>
+                        <div>
+                            <label class="field-label">Bedrag (€)</label>
+                            <input type="number" step="any" min="0" inputmode="decimal" value="${escapeAttr(rg.bedrag || '')}" placeholder="" oninput="updateEigenRegel(${idx}, 'bedrag', this.value)">
+                        </div>
+                        <div>
+                            <button type="button" class="btn-secondary" style="padding:8px 12px;" title="Regel wissen" onclick="verwijderEigenRegel(${idx})">×</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
         function voegExtraRegelToe() {
@@ -1831,12 +1883,10 @@
                 }
             }
 
-            // 4. PLANNING, PRIJS, EIGEN INVULLEN, TAPS & OVERIGE DETAILS
+            // 4. PLANNING, PRIJS, SAMENGEVOEGD INVULLEN & OVERIGE DETAILS
             const ref = document.getElementById('project-ref').value.trim();
             const planning = document.getElementById('planning-keuze').value;
             const prijsRaw = document.getElementById('prijs-posten').value;
-            const eigenTekst = document.getElementById('eigen-post-tekst').value.trim();
-            const eigenBedrag = numVal(document.getElementById('eigen-post-bedrag').value);
             const overigeDetails = document.getElementById('overige-details').value.trim();
 
             if (ref) {
@@ -1862,18 +1912,22 @@
             let totaalPrijs = 0;
             const extraGroepItems = [];
 
-            // Blok bovenaan: eigen invullen
-            if (eigenTekst || eigenBedrag > 0) {
-                const label = eigenTekst || 'Eigen post';
-                const bedragTekst = eigenBedrag > 0 ? fmtEuro(eigenBedrag) : '€ Niet gerekend';
-                if (eigenBedrag > 0) totaalPrijs += eigenBedrag;
-                werkzaamheden.push(`${label}.`);
-                extraGroepItems.push(`${label}.`);
-                prijsPosten.push({ omschrijving: label, bedrag: bedragTekst });
-                cnt['sec-planning']++;
-            }
+            // Eigen regels (losse post / reisuren)
+            eigenRegels.forEach((rg, idx) => {
+                const tekst = (rg.omschrijving || '').trim();
+                const bedrag = numVal(rg.bedrag);
+                if (tekst || bedrag > 0) {
+                    const label = tekst || `Eigen post ${idx + 1}`;
+                    const bedragTekst = bedrag > 0 ? fmtEuro(bedrag) : '€ Niet gerekend';
+                    if (bedrag > 0) totaalPrijs += bedrag;
+                    werkzaamheden.push(`${label}.`);
+                    extraGroepItems.push(`${label}.`);
+                    prijsPosten.push({ omschrijving: label, bedrag: bedragTekst });
+                    cnt['sec-planning']++;
+                }
+            });
 
-            // Oude blok met taps: post + bedrag + m2 -> totaal per regel
+            // Posten & m² berekening
             extraRegels.forEach((rg, idx) => {
                 const calc = berekenTapRegel(rg);
                 const regelTotaalEl = document.getElementById(`tap-regel-totaal-${idx}`);
@@ -2159,7 +2213,9 @@
 
         function opnieuwBeginnen() {
             document.getElementById('offerte-form').reset();
+            eigenRegels = maakStandaardEigenRegels();
             extraRegels = maakStandaardExtraRegels();
+            renderEigenRegels();
             renderExtraRegels();
             verwerkAlles();
             selectSectie('sec-basis');
@@ -2172,6 +2228,7 @@
             });
         }
 
+        renderEigenRegels();
         renderExtraRegels();
         verwerkAlles();
     </script>
