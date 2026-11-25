@@ -1,6 +1,6 @@
 {
-  "name": "Offerte Vragenlijst — PlenderWestendorp",
-  "short_name": "PW Offerte",
+  "name": "PlenderWestendorp — Offerte Vragenlijst",
+  "short_name": "PlenderWestendorp",
   "description": "Offerte vragenlijst en opname voor totaalonderhoud — PlenderWestendorp",
   "start_url": "./index.html",
   "scope": "./",
